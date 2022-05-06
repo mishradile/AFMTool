@@ -10,7 +10,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 from IPython import display
 
-filename = "../data/1.spm"
+filename = "data/1.spm"
 scan = pySPM.Bruker(filename)
 #scan.list_channels()
 
