@@ -7,3 +7,4 @@ afmdata/**
 data/*
 data/**
 *.spm
+**/images/
