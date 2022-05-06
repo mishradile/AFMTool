@@ -1,3 +1,4 @@
 afmdata/**
 AFMTOOL/virtualenv/**
 AFMTOOL/.vscode/**
+data/**
