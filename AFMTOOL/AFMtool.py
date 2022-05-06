@@ -29,6 +29,7 @@ fig, ax = plt.subplots(1, 1, figsize=(20, 20))
 height_data_correct_plane.show(ax=ax, cmap="copper")
 #amp_error_data.show(ax=ax[2])
 
+fig.tight_layout()
 plt.savefig("../AFMTOOL/images/2d_height_plot")
 
 
@@ -57,5 +58,6 @@ X, Y = np.meshgrid(np.linspace(0, 20, len(height_array)), np.linspace(0, 20, len
 # TODO: Experiement with different colors
 plot = ax.plot_surface(X=X, Y=Y, Z=height_array, cmap='copper')
 
+fig.tight_layout()
 plt.savefig("../AFMTOOL/images/3d_height_plot")
 
