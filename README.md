@@ -8,5 +8,5 @@ AFM Tool for automating data analysis for  .spm files
 - Automatically generate Excel sheet containing above values
 
 
-##Timeline
+## Timeline
 - See commit history
