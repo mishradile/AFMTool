@@ -1,4 +1,4 @@
-#Prevent uploading of unecessary supporting files and spm data
+#Prevent uploading of unecessary supporting files, images generated and spm data
 afmdata/**
 **/virtualenv/
 **/.vscode/
@@ -7,3 +7,5 @@ afmdata/**
 data/*
 data/**
 *.spm
+**/util/mlScripts/__pycache__/
+**/images/

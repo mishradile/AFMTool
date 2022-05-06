@@ -6,11 +6,12 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
 from mpl_toolkits.mplot3d import Axes3D
+from util.mlScripts.circle_identifier import find_circles
 
 import os
 from IPython import display
 
-filename = "data/1.spm"
+filename = "data/3.spm"
 scan = pySPM.Bruker(filename)
 #scan.list_channels()
 
@@ -30,7 +31,8 @@ height_data_correct_plane.show(ax=ax, cmap="copper")
 #amp_error_data.show(ax=ax[2])
 
 fig.tight_layout()
-plt.savefig("../AFMTOOL/images/2d_height_plot")
+fig_path_2d = "../AFMTOOL/images/2d_height_plot"
+plt.savefig(fig_path_2d)
 
 
 #Get height data as numpy array
@@ -59,5 +61,10 @@ X, Y = np.meshgrid(np.linspace(0, 20, len(height_array)), np.linspace(0, 20, len
 plot = ax.plot_surface(X=X, Y=Y, Z=height_array, cmap='copper')
 
 fig.tight_layout()
-plt.savefig("../AFMTOOL/images/3d_height_plot")
+fig_path_3d = "../AFMTOOL/images/3d_height_plot"
+plt.savefig(fig_path_3d)
+
+
+#Identify circles
+find_circles(fig_path_2d)
 
