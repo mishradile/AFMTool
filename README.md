@@ -9,4 +9,4 @@ AFM Tool for automating data analysis for  .spm files
 
 
 ## Timeline
-- See commit history
+- 6/5/2022: Able to generate 2D, 3D plots using .spm data using Python. (https://github.com/ChenJiakaiIME/AFMTool/tree/main/AFMTOOL/images) Color may need improvement.
