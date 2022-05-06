@@ -10,7 +10,15 @@ from mpl_toolkits.mplot3d import Axes3D
 import os
 from IPython import display
 
-filename = "data/1.spm"
+
+#Dialogue box GUI to select file to analyze
+import tkinter as tk
+from tkinter import filedialog
+
+root = tk.Tk()
+root.withdraw()
+
+filename = filedialog.askopenfilename()
 scan = pySPM.Bruker(filename)
 #scan.list_channels()
 
