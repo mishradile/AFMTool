@@ -2,5 +2,5 @@
 afmdata/**
 **/virtualenv/
 **/.vscode/
-**/data/
+../data/**
 *.spm
