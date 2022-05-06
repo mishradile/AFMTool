@@ -1,4 +1,5 @@
+#Prevent uploading of unecessary supporting files and spm data
 afmdata/**
-AFMTOOL/virtualenv/**
-AFMTOOL/.vscode/**
-data/**
+**/virtualenv/
+**/.vscode/
+**/data/
