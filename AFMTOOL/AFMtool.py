@@ -18,6 +18,9 @@ topo = scan.get_channel()
 height_data = scan.get_channel("Height Sensor") 
 amp_error_data = scan.get_channel("Amplitude Error") 
 phase_data = scan.get_channel("Phase") 
+height_array_fake = height_data.pixels
+print(height_array_fake.shape)
+print(height_array_fake[0,1])
 
 #Correct data for slope
 #TODO: Check if algorithm is same as currently used
@@ -36,6 +39,7 @@ plt.savefig("../AFMTOOL/images/2d_height_plot")
 #Get height data as numpy array
 #Checked against AtomicJ, height data is in nm. 
 height_array = height_data_correct_plane.pixels
+
 #print(height_array)
 
 
