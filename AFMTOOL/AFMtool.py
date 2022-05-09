@@ -1,3 +1,6 @@
+import time
+start_time = time.time()
+from venv import create
 import pySPM
 #print(pySPM.__version__)
 
@@ -7,9 +10,11 @@ import matplotlib as mpl
 from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
 from mpl_toolkits.mplot3d import Axes3D
 from scipy import interpolate
+import sys
+sys.path.append("../")
+from AFMTOOL.util.excel_utils.create_excel import create_xl_template, insert_xl
 
 import os
-from IPython import display
 
 
 #Dialogue box GUI to select file to analyze
@@ -19,11 +24,11 @@ from tkinter import filedialog
 root = tk.Tk()
 root.withdraw()
 
-filename = filedialog.askopenfilename()
-scan = pySPM.Bruker(filename)
+#filename = filedialog.askopenfilename()
+scan = pySPM.Bruker("data/3.spm")
 #scan.list_channels()
 
-topo = scan.get_channel()
+#topo = scan.get_channel()
 height_data = scan.get_channel("Height Sensor") 
 amp_error_data = scan.get_channel("Amplitude Error") 
 phase_data = scan.get_channel("Phase") 
@@ -39,7 +44,8 @@ height_data_correct_plane.show(ax=ax, cmap="copper")
 #amp_error_data.show(ax=ax[2])
 
 fig.tight_layout()
-plt.savefig("../AFMTOOL/images/2d_height_plot")
+img_path_2d = "../AFMTOOL/images/2d_height_plot"
+plt.savefig(img_path_2d)
 
 
 #Get height data as numpy array
@@ -72,5 +78,21 @@ X, Y = np.meshgrid(np.linspace(0, 20, len(height_array)), np.linspace(0, 20, len
 plot = ax.plot_surface(X=X, Y=Y, Z=height_array, cmap='YlOrBr' ,rstride=1, cstride=1, alpha=None)
 
 fig.tight_layout()
-plt.savefig("../AFMTOOL/images/3d_height_plot")
+img_path_3d = "../AFMTOOL/images/3d_height_plot"
+plt.savefig(img_path_3d)
+
+create_xl_template()
+
+
+
+
+
+
+
+
+
+
+print("[Code executed in %s seconds]" % (time.time() - start_time))
+
+
 

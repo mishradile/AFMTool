@@ -8,3 +8,5 @@ data/*
 data/**
 *.spm
 **/images/
+**.xlsx
+**/__pycache__/
