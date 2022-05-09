@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
 from mpl_toolkits.mplot3d import Axes3D
+from scipy import interpolate
 
 import os
 from IPython import display
@@ -51,6 +52,7 @@ height_array = height_data_correct_plane.pixels
 # Create figure and add axis
 
 fig = plt.figure(figsize=(20,20))
+plt.style.use('dark_background')
 ax = plt.subplot(111, projection='3d')
 # Remove gray panes and axis grid
 ax.xaxis.pane.fill = False
@@ -62,9 +64,12 @@ ax.zaxis.pane.set_edgecolor('black')
 ax.grid(False)
 # Create meshgrid, grid labels will be in micrometer
 X, Y = np.meshgrid(np.linspace(0, 20, len(height_array)), np.linspace(0, 20, len(height_array)))
+#tck = interpolate.bisplrep(X, Y, height_array, s=0)
 # Plot surface
 # TODO: Experiement with different colors
-plot = ax.plot_surface(X=X, Y=Y, Z=height_array, cmap='copper')
+#Interpolate data to get smoother plot
+#interpolated_height_array = interpolate.bisplev(X[:,0], Y[0,:], tck)
+plot = ax.plot_surface(X=X, Y=Y, Z=height_array, cmap='YlOrBr' ,rstride=1, cstride=1, alpha=None)
 
 fig.tight_layout()
 plt.savefig("../AFMTOOL/images/3d_height_plot")
