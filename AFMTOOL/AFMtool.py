@@ -25,7 +25,7 @@ root = tk.Tk()
 root.withdraw()
 
 #filename = filedialog.askopenfilename()
-scan = pySPM.Bruker("data/3.spm")
+scan = pySPM.Bruker("data/1.spm")
 #scan.list_channels()
 
 #topo = scan.get_channel()
