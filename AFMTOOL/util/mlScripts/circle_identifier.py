@@ -4,7 +4,7 @@ Locate the center of the circular Cu contacts given the height data array
 import cv2
 import numpy as np
 
-def find_circles(img_path):
+def find_circles():
     """ 
     Returns coordinate of circles found
     """
@@ -39,7 +39,8 @@ def find_circles(img_path):
             cv2.circle(img, (a, b), 1, (0, 0, 255), 3)
         cv2.imshow("Detected Circle", img)
         cv2.waitKey(0)
-    
+    else:
+        return 0
     
 def ResizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
     dim = None

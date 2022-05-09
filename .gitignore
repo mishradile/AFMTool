@@ -9,3 +9,5 @@ data/**
 *.spm
 **/util/mlScripts/__pycache__/
 **/images/
+**/__pycache__/
+**.xlsx

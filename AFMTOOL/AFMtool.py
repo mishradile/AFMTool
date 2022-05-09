@@ -11,7 +11,7 @@ from util.mlScripts.circle_identifier import find_circles
 import os
 from IPython import display
 
-filename = "data/3.spm"
+filename = "data/2.spm"
 scan = pySPM.Bruker(filename)
 #scan.list_channels()
 
@@ -66,5 +66,5 @@ plt.savefig(fig_path_3d)
 
 
 #Identify circles
-find_circles(fig_path_2d)
+find_circles()
 
