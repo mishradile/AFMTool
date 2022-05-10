@@ -36,7 +36,7 @@ def create_xl_template():
     sheet["H1"] = "Process: "
     sheet["I1"] = "Measurement: "
     
-    sheet["G2"] = "Step height with example: "
+    #sheet["G2"] = "Step height with example: "
     
     
     blueFill = PatternFill(start_color='000066CC',
@@ -49,20 +49,15 @@ def create_xl_template():
     sheet["A8"].fill = blueFill
     sheet["A9"].fill = blueFill
     
-    double = Side(border_style="medium", color="000000")
+    
     
     #Set row height for images
     sheet.row_dimensions[5].height = 104
     sheet.row_dimensions[6].height = 104
     sheet.row_dimensions[2].height = 30
     
-    ws.column_dimensions['G'].width = 20
-    
-    #Align texts
-    for row in sheet.iter_rows():
-        for cell in row:
-            cell.alignment= Alignment(wrap_text=True, vertical='center', horizontal = 'center')
-            cell.border = Border(top=double, left=double, right=double, bottom=double)
+    sheet.column_dimensions['G'].width = 20
+
             
     sheet.column_dimensions['A'].width = 25
 
@@ -96,6 +91,12 @@ def insert_xl(excel_file_path, img_path_2d, img_path_3d, col_num):
     ws.add_image(img_2d)
     ws.add_image(img_3d)
     
+    #Align texts
+    double = Side(border_style="medium", color="000000")
+    for row in ws.iter_rows():
+        for cell in row:
+            cell.alignment= Alignment(wrap_text=True, vertical='center', horizontal = 'center')
+            cell.border = Border(top=double, left=double, right=double, bottom=double)
     
     
     wb.save(excel_file_path)
