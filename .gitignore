@@ -7,7 +7,8 @@ afmdata/**
 data/*
 data/**
 *.spm
-**/util/mlScripts/__pycache__/
 **/images/
-**/__pycache__/
 **.xlsx
+**/__pycache__/
+**.png
+**/ML_identified_contacts/
