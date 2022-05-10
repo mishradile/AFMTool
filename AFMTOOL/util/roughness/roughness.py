@@ -19,7 +19,7 @@ import matplotlib as mpl
 import os
 from IPython import display
 
-from np import mean, absolute
+from numpy import mean, absolute
 
 def find_ra(array, x,y, is_copper=True):
     """ 
@@ -41,7 +41,8 @@ def find_ra(array, x,y, is_copper=True):
     return mean(absolute(sample - mean(sample)))
 
 
-    
+def excel_input_ra():
+    return 0
     
 
 
