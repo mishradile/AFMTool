@@ -1,5 +1,5 @@
 import time
-start_time = time.time()
+
 from venv import create
 import pySPM
 #print(pySPM.__version__)
@@ -27,8 +27,9 @@ root.withdraw()
 
 filename_list = list(filedialog.askopenfilenames(parent=root))
 #print(filename_list[0])
+start_time = time.time()
 
-create_xl_template()
+excel_file_path = create_xl_template()
 
 #Clear images directory
 dir = '../AFMTOOL/images/'
@@ -36,6 +37,7 @@ for f in os.listdir(dir):
     os.remove(os.path.join(dir, f))
  
 with alive_bar(len(filename_list)) as bar:
+    file_no=1
     for filename in filename_list:
         scan = pySPM.Bruker(filename)
         #scan.list_channels()
@@ -61,6 +63,7 @@ with alive_bar(len(filename_list)) as bar:
         #Remove .spm at the end and replace '.' with '_'
         filename_formatted = filename.split("/")[-1][:-3].replace('.', '_')
         img_path_2d = "../AFMTOOL/images/"+str(filename_formatted)+"2d_plot"
+        plt.style.use('dark_background')
         plt.savefig(img_path_2d)
 
 
@@ -93,6 +96,9 @@ with alive_bar(len(filename_list)) as bar:
         fig.tight_layout()
         img_path_3d = "../AFMTOOL/images/"+str(filename_formatted)+"3d_plot"
         plt.savefig(img_path_3d)
+        
+        insert_xl(excel_file_path, img_path_2d, img_path_3d,file_no)
+        file_no+=1  
         bar()
 
 

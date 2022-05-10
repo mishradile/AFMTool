@@ -5,6 +5,7 @@ from openpyxl.styles import Color, PatternFill, Font, Border, Alignment, Side
 from openpyxl.cell import Cell
 import openpyxl
 import pytz
+from openpyxl.utils import get_column_letter
 
 workbook = Workbook()
 sheet = workbook.active
@@ -50,6 +51,13 @@ def create_xl_template():
     
     double = Side(border_style="medium", color="000000")
     
+    #Set row height for images
+    sheet.row_dimensions[5].height = 104
+    sheet.row_dimensions[6].height = 104
+    sheet.row_dimensions[2].height = 30
+    
+    ws.column_dimensions['G'].width = 20
+    
     #Align texts
     for row in sheet.iter_rows():
         for cell in row:
@@ -63,14 +71,32 @@ def create_xl_template():
     
     return target_path
 
-def insert_xl(img_path_2d, img_path_3d):
+def insert_xl(excel_file_path, img_path_2d, img_path_3d, col_num):
     
-    img_path = img_path[3:]
+    wb = openpyxl.load_workbook(excel_file_path)
+    ws = wb["Sheet"]
     
-    img = openpyxl.drawing.image.Image("images/2d_height_plot.png")
-    img.height = 100
-    img.width = 100
-    sheet.add_image(img, 'A1')
     
-
-    workbook.save("../results/xlSheets/"+ format_timestring+ "_AFMResults.xlsx")
+    img_path_2d = img_path_2d[11:]+".png"
+    img_path_3d = img_path_3d[11:]+".png"
+    #images/3_2d_plot.png
+    img_2d = openpyxl.drawing.image.Image(img_path_2d)
+    img_3d = openpyxl.drawing.image.Image(img_path_3d)
+    img_2d.height = 140
+    img_2d.width = 140
+    img_3d.height = 140
+    img_3d.width = 140
+    
+    col_letter = get_column_letter(col_num+1)
+    ws.column_dimensions[col_letter].width = 20
+    img_2d.anchor =  col_letter+'5'
+    img_3d.anchor =  col_letter+'6'
+    
+    ws[col_letter+'3'] = img_path_2d[7:-12]
+    ws.add_image(img_2d)
+    ws.add_image(img_3d)
+    
+    
+    
+    wb.save(excel_file_path)
+    
