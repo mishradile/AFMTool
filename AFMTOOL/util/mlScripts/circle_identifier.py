@@ -20,7 +20,7 @@ def find_circles():
     # Apply Hough transform on the blurred image.
     detected_circles = cv2.HoughCircles(gray_blurred, 
                     cv2.HOUGH_GRADIENT, 1, 70, param1 = 50,
-                param2 = 30, minRadius = 10, maxRadius = 150)
+                param2 = 20, minRadius = 10, maxRadius = 150)
   
   
     # # Draw circles that are detected.

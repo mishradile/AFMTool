@@ -11,7 +11,7 @@ from util.mlScripts.circle_identifier import find_circles
 import os
 from IPython import display
 
-filename = "data/2.spm"
+filename = "data/S21C2.0_00037.spm"
 scan = pySPM.Bruker(filename)
 #scan.list_channels()
 
