@@ -67,8 +67,10 @@ with alive_bar(len(filename_list)) as bar:
         #Remove .spm at the end and replace '.' with '_'
         filename_formatted = filename.split("/")[-1][:-3].replace('.', '_')
         img_path_2d = "../AFMTOOL/images/"+str(filename_formatted)+"2d_plot"
-        plt.style.use('dark_background')
-        plt.savefig(img_path_2d)
+        #plt.style.use('dark_background')
+        plt.axis('off')
+        plt.title('')
+        plt.savefig(img_path_2d, bbox_inches='tight', pad_inches=0)
 
 
         #Get height data as numpy array

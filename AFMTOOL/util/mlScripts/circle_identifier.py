@@ -28,8 +28,8 @@ def find_circles(file_name, target_dir_path):
     # Apply Hough transform on the blurred image.
     #TODO: Document assumptions here
     detected_circles = cv2.HoughCircles(gray_blurred, 
-                    cv2.HOUGH_GRADIENT, 1, 160, param1 = 50,
-                param2 = 25, minRadius = 40, maxRadius = 110)
+                    cv2.HOUGH_GRADIENT, 1, 200, param1 = 50,
+                param2 = 27, minRadius = 40, maxRadius = 110)
   
   
     # # Draw circles that are detected.
@@ -39,6 +39,7 @@ def find_circles(file_name, target_dir_path):
   
         # Convert the circle parameters a, b and r to integers.
         detected_circles = np.uint16(np.around(detected_circles))
+        cv2.circle(img, (760, 760), 1, (255, 0, 0), 3)
         
         # cv2.circle(img, (200, 200), 100, (255,0,  0), 2)
         # cv2.circle(img, (200, 200), 50, (255,0,  0), 2)
@@ -46,10 +47,10 @@ def find_circles(file_name, target_dir_path):
         for pt in detected_circles[0, :]:
             a, b, r = pt[0], pt[1], pt[2]
     
-    #         # Draw the circumference of the circle.
+            # Draw the circumference of the circle.
             cv2.circle(img, (a, b), r, (0, 255, 0), 2)
     
-    #         # Draw a small circle (of radius 1) to show the center.
+            # Draw a small circle (of radius 1) to show the center.
             cv2.circle(img, (a, b), 1, (0, 0, 255), 3)
         #cv2.imshow("Detected Circle", img)
         #Save image
