@@ -29,7 +29,7 @@ def find_circles(file_name, target_dir_path):
     #TODO: Document assumptions here
     detected_circles = cv2.HoughCircles(gray_blurred, 
                     cv2.HOUGH_GRADIENT, 1, 160, param1 = 50,
-                param2 = 22, minRadius = 40, maxRadius = 110)
+                param2 = 25, minRadius = 40, maxRadius = 110)
   
   
     # # Draw circles that are detected.
@@ -51,10 +51,11 @@ def find_circles(file_name, target_dir_path):
     
     #         # Draw a small circle (of radius 1) to show the center.
             cv2.circle(img, (a, b), 1, (0, 0, 255), 3)
-        cv2.imshow("Detected Circle", img)
+        #cv2.imshow("Detected Circle", img)
         #Save image
         cv2.imwrite(target_dir_path+file_name[:-1]+".png", img)
         #cv2.waitKey(0)
+        return detected_circles
     else:
         return 0
     
