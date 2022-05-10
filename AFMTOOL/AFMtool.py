@@ -13,6 +13,7 @@ from scipy import interpolate
 import sys
 sys.path.append("../")
 from AFMTOOL.util.excel_utils.create_excel import create_xl_template, insert_xl
+from AFMTOOL.util.mlScripts.circle_identifier import find_circles, create_ml_img_dir
 from alive_progress import alive_bar
 
 import os
@@ -29,7 +30,10 @@ filename_list = list(filedialog.askopenfilenames(parent=root))
 #print(filename_list[0])
 start_time = time.time()
 
+#Directory to store generated Excel reports
 excel_file_path = create_xl_template()
+#Directory to store ML generated imgs
+ml_result_path = create_ml_img_dir()
 
 #Clear images directory
 dir = '../AFMTOOL/images/'
@@ -99,6 +103,8 @@ with alive_bar(len(filename_list)) as bar:
         
         insert_xl(excel_file_path, img_path_2d, img_path_3d,file_no)
         file_no+=1  
+        
+        find_circles(filename_formatted, ml_result_path)
         bar()
 
 
@@ -114,5 +120,8 @@ with alive_bar(len(filename_list)) as bar:
 
 print("[Code executed in %s seconds]" % (time.time() - start_time))
 
+
+
+#Identify circles
 
 

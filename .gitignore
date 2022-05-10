@@ -1,4 +1,4 @@
-#Prevent uploading of unecessary supporting files and spm data
+#Prevent uploading of unecessary supporting files, images generated and spm data
 afmdata/**
 **/virtualenv/
 **/.vscode/
@@ -10,3 +10,5 @@ data/**
 **/images/
 **.xlsx
 **/__pycache__/
+**.png
+**/ML_identified_contacts/
