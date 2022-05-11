@@ -23,13 +23,12 @@ def find_circles(file_name, target_dir_path):
     # Convert to grayscale.
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
-    # Blur using 3 * 3 kernel.
     gray_blurred = cv2.medianBlur(gray,9)
     # Apply Hough transform on the blurred image.
     #TODO: Document assumptions here
     detected_circles = cv2.HoughCircles(gray_blurred, 
-                    cv2.HOUGH_GRADIENT, 1, 160, param1 = 50,
-                param2 = 25, minRadius = 40, maxRadius = 110)
+                    cv2.HOUGH_GRADIENT, 1, 200, param1 = 35,
+                param2 = 27, minRadius = 40, maxRadius = 110)
   
   
     # # Draw circles that are detected.
@@ -39,6 +38,7 @@ def find_circles(file_name, target_dir_path):
   
         # Convert the circle parameters a, b and r to integers.
         detected_circles = np.uint16(np.around(detected_circles))
+        #cv2.circle(img, (768, 768), 1, (255, 0, 0), 3)
         
         # cv2.circle(img, (200, 200), 100, (255,0,  0), 2)
         # cv2.circle(img, (200, 200), 50, (255,0,  0), 2)
@@ -46,10 +46,10 @@ def find_circles(file_name, target_dir_path):
         for pt in detected_circles[0, :]:
             a, b, r = pt[0], pt[1], pt[2]
     
-    #         # Draw the circumference of the circle.
+            # Draw the circumference of the circle.
             cv2.circle(img, (a, b), r, (0, 255, 0), 2)
     
-    #         # Draw a small circle (of radius 1) to show the center.
+            # Draw a small circle (of radius 1) to show the center.
             cv2.circle(img, (a, b), 1, (0, 0, 255), 3)
         #cv2.imshow("Detected Circle", img)
         #Save image
@@ -57,7 +57,15 @@ def find_circles(file_name, target_dir_path):
         #cv2.waitKey(0)
         return detected_circles
     else:
-        return 0
+        cv2.putText(img,'Error: No circles/copper contacts detected', 
+            (50, 370), 
+            cv2.FONT_HERSHEY_SIMPLEX, 
+            1,
+            (255,255,255),
+            1,
+            2)
+        cv2.imwrite(target_dir_path+file_name[:-1]+"_error"+".png", img)
+        return None
     
 def ResizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
     dim = None
