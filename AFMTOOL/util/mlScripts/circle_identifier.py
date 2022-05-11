@@ -38,7 +38,7 @@ def find_circles(file_name, target_dir_path):
   
         # Convert the circle parameters a, b and r to integers.
         detected_circles = np.uint16(np.around(detected_circles))
-        cv2.circle(img, (760, 760), 1, (255, 0, 0), 3)
+        #cv2.circle(img, (768, 768), 1, (255, 0, 0), 3)
         
         # cv2.circle(img, (200, 200), 100, (255,0,  0), 2)
         # cv2.circle(img, (200, 200), 50, (255,0,  0), 2)

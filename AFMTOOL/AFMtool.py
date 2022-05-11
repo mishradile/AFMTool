@@ -14,6 +14,7 @@ import sys
 sys.path.append("../")
 from AFMTOOL.util.excel_utils.create_excel import create_xl_template, insert_xl
 from AFMTOOL.util.mlScripts.circle_identifier import find_circles, create_ml_img_dir
+from AFMTOOL.util.roughness.roughness import find_ra, insert_ra
 from alive_progress import alive_bar
 
 import os
@@ -48,13 +49,14 @@ with alive_bar(len(filename_list)) as bar:
 
         #topo = scan.get_channel()
         height_data = scan.get_channel("Height Sensor") 
-        amp_error_data = scan.get_channel("Amplitude Error") 
-        phase_data = scan.get_channel("Phase") 
+        #amplitude_error_data = scan.get_channel("Amplitude Error") 
+        #phase_data = scan.get_channel("Phase") 
 
         #Correct data for slope
         #TODO: Check if algorithm is same as currently used
-        height_data_correct_plane = height_data.correct_plane(inline=False)
-
+        #height_data_correct_plane = height_data.correct_plane(inline=False)
+        height_data_correct_plane = height_data
+        #Plot of height data for Excel report 
         fig, ax = plt.subplots(1, 1, figsize=(20, 20))
 
         #phase_data.show(ax=ax[0])
@@ -71,8 +73,7 @@ with alive_bar(len(filename_list)) as bar:
         plt.axis('off')
         plt.title('')
         plt.savefig(img_path_2d, bbox_inches='tight', pad_inches=0)
-
-
+    
         #Get height data as numpy array
         #Checked against AtomicJ, height data is in nm. 
         height_array = height_data_correct_plane.pixels
@@ -104,11 +105,16 @@ with alive_bar(len(filename_list)) as bar:
         plt.savefig(img_path_3d)
         
         insert_xl(excel_file_path, img_path_2d, img_path_3d,file_no)
-        file_no+=1  
+        
         
         #Identify copper contacts
-        find_circles(filename_formatted, ml_result_path)
+        detected_circles = find_circles(filename_formatted, ml_result_path)
         
+        ra = find_ra(height_array, detected_circles)
+        
+        insert_ra(excel_file_path, ra, file_no)
+        
+        file_no+=1  
         bar()
 
 
