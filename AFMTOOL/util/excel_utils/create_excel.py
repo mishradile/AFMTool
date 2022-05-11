@@ -1,8 +1,6 @@
 from openpyxl import Workbook
 from datetime import datetime
-from openpyxl import styles
-from openpyxl.styles import Color, PatternFill, Font, Border, Alignment, Side
-from openpyxl.cell import Cell
+from openpyxl.styles import PatternFill, Border, Alignment, Side
 import openpyxl
 import pytz
 from openpyxl.utils import get_column_letter
