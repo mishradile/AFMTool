@@ -6,15 +6,12 @@ import pySPM
 
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib as mpl
-from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
-from mpl_toolkits.mplot3d import Axes3D
-from scipy import interpolate
 import sys
 sys.path.append("../")
 from AFMTOOL.util.excel_utils.create_excel import create_xl_template, insert_xl
 from AFMTOOL.util.mlScripts.circle_identifier import find_circles, create_ml_img_dir
 from AFMTOOL.util.roughness.roughness import find_ra, insert_ra
+from AFMTOOL.util.line_profile.line_profile import plot_line_profile
 from alive_progress import alive_bar
 
 import os
@@ -40,6 +37,9 @@ ml_result_path = create_ml_img_dir()
 dir = '../AFMTOOL/images/'
 for f in os.listdir(dir):
     os.remove(os.path.join(dir, f))
+dir = '../AFMTOOL/line_profile_imgs/'
+for f in os.listdir(dir):
+    os.remove(os.path.join(dir, f))   
  
 with alive_bar(len(filename_list)) as bar:
     file_no=1
@@ -78,6 +78,15 @@ with alive_bar(len(filename_list)) as bar:
         #Checked against AtomicJ, height data is in nm. 
         height_array = height_data_correct_plane.pixels
         #print(height_array)
+        
+        #Identify copper contacts
+        detected_circles = find_circles(filename_formatted, ml_result_path)
+        
+        ra = find_ra(height_array, detected_circles)
+        
+        insert_ra(excel_file_path, ra, file_no)
+        
+        plot_line_profile(filename_formatted, height_array, detected_circles[0, :][-1][1])
 
 
         #Plot 3D graph
@@ -107,12 +116,7 @@ with alive_bar(len(filename_list)) as bar:
         insert_xl(excel_file_path, img_path_2d, img_path_3d,file_no)
         
         
-        #Identify copper contacts
-        detected_circles = find_circles(filename_formatted, ml_result_path)
-        
-        ra = find_ra(height_array, detected_circles)
-        
-        insert_ra(excel_file_path, ra, file_no)
+       
         
         file_no+=1  
         bar()

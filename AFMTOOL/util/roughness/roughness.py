@@ -29,14 +29,14 @@ def find_ra(array, detected_circles, is_copper=True):
     circles_count=0
     for pt in detected_circles[0, :]:
         circles_count+=1
-        x,y = int(pt[0]/768), int(pt[1]/768)
+        x,y = int(pt[0]*256/768), int(pt[1]*256/768)
         
         range =6 if is_copper else 12
         
         #Define sample area to calculate roughness 
         #used min, max in case selected center is too close to the borders
         #TODO: Record in doc coordinate system 
-        sample = array[min(x-range,0):max(x+range+1, 256), min((256-y)-range,0):max((256-y)+range+1, 256)] 
+        sample = array[min((256-y)-range,0):max((256-y)+range+1, 256), min(x-range,0):max(x+range+1, 256)] 
         
         total_ra+=mean(absolute(sample - mean(sample)))
     if(circles_count==0):
