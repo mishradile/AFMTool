@@ -64,8 +64,8 @@ with alive_bar(len(filename_list)) as bar:
         fig.tight_layout()
         
         #Format filename for saving
-        #Remove .spm at the end and replace '.' with '_'
-        filename_formatted = filename.split("/")[-1][:-3].replace('.', '_')
+        #Remove .spm at the end and replace '.' and space with '_'
+        filename_formatted = filename.split("/")[-1][:-3].replace('.', '_').replace(' ', '_')
         img_path_2d = "../AFMTOOL/images/"+str(filename_formatted)+"2d_plot"
         #plt.style.use('dark_background')
         plt.axis('off')

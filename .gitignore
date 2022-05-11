@@ -12,3 +12,4 @@ data/**
 **/__pycache__/
 **.png
 **/ML_identified_contacts/
+**.pyc

@@ -23,12 +23,11 @@ def find_circles(file_name, target_dir_path):
     # Convert to grayscale.
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
-    # Blur using 3 * 3 kernel.
     gray_blurred = cv2.medianBlur(gray,9)
     # Apply Hough transform on the blurred image.
     #TODO: Document assumptions here
     detected_circles = cv2.HoughCircles(gray_blurred, 
-                    cv2.HOUGH_GRADIENT, 1, 200, param1 = 50,
+                    cv2.HOUGH_GRADIENT, 1, 200, param1 = 35,
                 param2 = 27, minRadius = 40, maxRadius = 110)
   
   
@@ -58,7 +57,15 @@ def find_circles(file_name, target_dir_path):
         #cv2.waitKey(0)
         return detected_circles
     else:
-        return 0
+        cv2.putText(img,'Error: No circles/copper contacts detected', 
+            (50, 370), 
+            cv2.FONT_HERSHEY_SIMPLEX, 
+            1,
+            (255,255,255),
+            1,
+            2)
+        cv2.imwrite(target_dir_path+file_name[:-1]+"_error"+".png", img)
+        return None
     
 def ResizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
     dim = None
