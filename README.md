@@ -19,8 +19,12 @@ AFM Tool for automating data analysis for  .spm files
 - 10/5/2022: 
   - Enabled batch processing. User can select multiple files at once from window to be processed, added progress bar to show how many files have been processed in live time (https://github.com/ChenJiakaiIME/AFMTool/pull/4)
   - Auto generate Excel report with all images generated with their file names labelled (https://github.com/ChenJiakaiIME/AFMTool/pull/5)
-  - Fine tuned ML scripts for contact points that are not nicely circular (No misidentified circles from any files) (https://github.com/ChenJiakaiIME/AFMTool/pull/2)
+  - Fine tuned ML scripts for contact points that are not nicely circular (https://github.com/ChenJiakaiIME/AFMTool/pull/2)
   - Enabled auto-saving of images of circles identified for manual checking of ML results
+
+- 11/5/2022:
+  - Enabled auto generation of line profile plot 
+  - Auto calculation of roughness (Ra) at center of copper contacts
 
 ## Installation 
 TODO: Write requirements.txt for auto-installation
