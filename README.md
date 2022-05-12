@@ -26,6 +26,11 @@ AFM Tool for automating data analysis for  .spm files
   - Enabled auto generation of line profile plot 
   - Auto calculation of roughness (Ra) at center of copper contacts
 
+- 12/5/2022:
+  - Able to calculate step height
+  - Able to plot vertical lines on line profile denoting areas of copper contact and polymer
+  - Insert line profile image and step height into Excel sheet
+
 ## Installation 
 TODO: Write requirements.txt for auto-installation
 - Prerequisites
