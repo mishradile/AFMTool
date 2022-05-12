@@ -13,6 +13,10 @@ datetime_SG = datetime.now(tz_SG)
 #For saving files with timestamps 
 format_timestring = datetime_SG.strftime("%m%d%Y%H%M")
 
+blueFill = PatternFill(start_color='000066CC',
+                   end_color='000066CC',
+                   fill_type='solid')
+
 def create_xl_template():
     """ 
     Creates empty template Excel sheet to be filled in 
@@ -25,27 +29,27 @@ def create_xl_template():
     sheet["A6"] = "3D View"
     sheet["A7"] = "Cu Roughness(nm) 1umX1um"
     sheet["A8"] = "Po roughness (nm) 2umX2um"
-
     sheet["A9"] = "Step height (nm) Protusion : + Dishing:-"
+
+    sheet["A10"] = "Line profile image"
     
     sheet["B1"] = "Slot ID: "
     
     sheet["C1"] = "CMP recipe: "
-    sheet["H1"] = "Process: "
-    sheet["I1"] = "Measurement: "
+    # sheet["H1"] = "Process: "
+    # sheet["I1"] = "Measurement: "
     
     #sheet["G2"] = "Step height with example: "
     
     
-    blueFill = PatternFill(start_color='000066CC',
-                   end_color='000066CC',
-                   fill_type='solid')
+    
 
     sheet["A5"].fill = blueFill
     sheet["A6"].fill = blueFill
     sheet["A7"].fill = blueFill
     sheet["A8"].fill = blueFill
     sheet["A9"].fill = blueFill
+    sheet["A10"].fill = blueFill
     
     
     
@@ -53,6 +57,7 @@ def create_xl_template():
     sheet.row_dimensions[5].height = 104
     sheet.row_dimensions[6].height = 104
     sheet.row_dimensions[2].height = 30
+    sheet.row_dimensions[10].height = 70
     
     sheet.column_dimensions['G'].width = 20
 
@@ -86,10 +91,19 @@ def insert_xl(excel_file_path, img_path_2d, img_path_3d, col_num):
     img_3d.anchor =  col_letter+'6'
     
     ws[col_letter+'3'] = img_path_2d[7:-12]
+    
+    ws[col_letter+'3'].fill = blueFill
     ws.add_image(img_2d)
     ws.add_image(img_3d)
     
-    #Align texts
+    wb.save(excel_file_path)
+
+def style_excel_final(excel_file_path):
+    
+    wb = openpyxl.load_workbook(excel_file_path)
+    ws = wb["Sheet"]
+    
+     #Align texts and style cell borders
     double = Side(border_style="medium", color="000000")
     for row in ws.iter_rows():
         for cell in row:
@@ -98,4 +112,5 @@ def insert_xl(excel_file_path, img_path_2d, img_path_3d, col_num):
     
     
     wb.save(excel_file_path)
+
     

@@ -8,10 +8,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 sys.path.append("../")
-from AFMTOOL.util.excel_utils.create_excel import create_xl_template, insert_xl
+from AFMTOOL.util.excel_utils.create_excel import create_xl_template, insert_xl, style_excel_final
 from AFMTOOL.util.mlScripts.circle_identifier import find_circles, create_ml_img_dir
 from AFMTOOL.util.roughness.roughness import find_ra, insert_ra
-from AFMTOOL.util.line_profile.line_profile import plot_line_profile
+from AFMTOOL.util.line_profile.line_profile import insert_line_profile, plot_line_profile
 from alive_progress import alive_bar
 
 import os
@@ -86,15 +86,17 @@ with alive_bar(len(filename_list)) as bar:
         
         insert_ra(excel_file_path, ra, file_no)
         
-        plot_line_profile(filename_formatted, height_array, detected_circles[0, :][-1][1])
+        step_height = plot_line_profile(filename_formatted, height_array, detected_circles[0, :][1][0], detected_circles[0, :][1][1],  detected_circles[0, :][1][2])
 
 
         #Plot 3D graph
         # Create figure and add axis
 
         fig = plt.figure(figsize=(20,20))
-        plt.style.use('dark_background')
+        fig.patch.set_facecolor('black')
+        #plt.style.use('dark_background')
         ax = plt.subplot(111, projection='3d')
+        ax.patch.set_facecolor('black')
         # Remove gray panes and axis grid
         ax.xaxis.pane.fill = False
         ax.xaxis.pane.set_edgecolor('black')
@@ -115,13 +117,11 @@ with alive_bar(len(filename_list)) as bar:
         
         insert_xl(excel_file_path, img_path_2d, img_path_3d,file_no)
         
-        
-       
-        
+        insert_line_profile(filename_formatted, excel_file_path, file_no, step_height)
         file_no+=1  
         bar()
 
-
+style_excel_final(excel_file_path)
 
 
 
