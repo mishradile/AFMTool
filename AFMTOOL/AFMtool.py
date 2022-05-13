@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import sys
 sys.path.append("../")
 from AFMTOOL.util.excel_utils.create_excel import create_xl_template, insert_xl, style_excel_final
-from AFMTOOL.util.mlScripts.circle_identifier import find_circles, create_ml_img_dir
+from AFMTOOL.util.mlScripts.circle_identifier import find_circles, create_ml_img_dir, identify_from_phase
 from AFMTOOL.util.roughness.roughness import find_ra, insert_ra
 from AFMTOOL.util.line_profile.line_profile import insert_line_profile, plot_line_profile
 from alive_progress import alive_bar
@@ -49,19 +49,19 @@ with alive_bar(len(filename_list)) as bar:
 
         #topo = scan.get_channel()
         height_data = scan.get_channel("Height Sensor") 
-        #amplitude_error_data = scan.get_channel("Amplitude Error") 
-        #phase_data = scan.get_channel("Phase") 
+        amp_error_data = scan.get_channel("Amplitude Error") 
+        phase_data = scan.get_channel("Phase") 
 
         #Correct data for slope
         #TODO: Check if algorithm is same as currently used
-        #height_data_correct_plane = height_data.correct_plane(inline=False)
-        height_data_correct_plane = height_data
+        height_data_correct_plane = height_data.correct_plane(inline=False)
+    
         #Plot of height data for Excel report 
-        fig, ax = plt.subplots(1, 1, figsize=(20, 20))
+        fig, ax = plt.subplots(1, 3, figsize=(20, 20))
 
-        #phase_data.show(ax=ax[0])
-        height_data_correct_plane.show(ax=ax, cmap="copper")
-        #amp_error_data.show(ax=ax[2])
+        phase_data.show(ax=ax[1])
+        height_data_correct_plane.show(ax=ax[0], cmap="copper")
+        amp_error_data.show(ax=ax[2])
 
         fig.tight_layout()
         
@@ -81,6 +81,7 @@ with alive_bar(len(filename_list)) as bar:
         
         #Identify copper contacts
         detected_circles = find_circles(filename_formatted, ml_result_path)
+        detected_circles = identify_from_phase(detected_circles, filename_formatted, ml_result_path, phase_data)
         
         if(detected_circles is None):
             insert_ra(excel_file_path, "Programme Error: Could not find any contact points", "Programme Error: Could not find any contact points", file_no)
