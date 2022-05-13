@@ -30,21 +30,14 @@ AFM Tool for automating data analysis for  .spm files
   - Able to calculate step height
   - Able to plot vertical lines on line profile denoting areas of copper contact and polymer
   - Insert line profile image and step height into Excel sheet
+  - Able to calculate polymer roughness
+
+- 13/5/2022:
+  - Fixed decimal points to 2
+  - Generated requirements.txt
 
 ## Installation 
-TODO: Write requirements.txt for auto-installation
-- Prerequisites
-    - Python 
-    - OpenCV
-    - numpy
-    - matplotlib
-    - IPython
-    - pySPM
-    - pytz
-    - datetime
-    - openpyxl
-    - alive_progress
-    - tkinter
+
     
 
 ## Notes on possible changes to measurement methods
