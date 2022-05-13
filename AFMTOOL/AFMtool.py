@@ -82,12 +82,15 @@ with alive_bar(len(filename_list)) as bar:
         #Identify copper contacts
         detected_circles = find_circles(filename_formatted, ml_result_path)
         
-        ra = find_ra(height_array, detected_circles)
-        
-        insert_ra(excel_file_path, ra, file_no)
-        
-        step_height = plot_line_profile(filename_formatted, height_array, detected_circles[0, :][1][0], detected_circles[0, :][1][1],  detected_circles[0, :][1][2])
-
+        if(detected_circles is None):
+            insert_ra(excel_file_path, "Programme Error: Could not find any contact points", "Programme Error: Could not find any contact points", file_no)
+        else:
+            ra, pol_ra = find_ra(height_array, detected_circles)
+            
+            insert_ra(excel_file_path, ra, pol_ra, file_no)
+            
+            step_height = plot_line_profile(filename_formatted, height_array, detected_circles[0, :][0][0], detected_circles[0, :][0][1],  detected_circles[0, :][0][2])
+            insert_line_profile(filename_formatted, excel_file_path, file_no, step_height)
 
         #Plot 3D graph
         # Create figure and add axis
@@ -116,8 +119,9 @@ with alive_bar(len(filename_list)) as bar:
         plt.savefig(img_path_3d)
         
         insert_xl(excel_file_path, img_path_2d, img_path_3d,file_no)
+        plt.close(fig)
         
-        insert_line_profile(filename_formatted, excel_file_path, file_no, step_height)
+        
         file_no+=1  
         bar()
 
