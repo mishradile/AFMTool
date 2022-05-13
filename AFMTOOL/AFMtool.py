@@ -96,7 +96,7 @@ with alive_bar(len(filename_list)) as bar:
         #Plot 3D graph
         # Create figure and add axis
 
-        fig = plt.figure(figsize=(20,20))
+        fig = plt.figure(figsize=(10,10))
         fig.patch.set_facecolor('black')
         #plt.style.use('dark_background')
         ax = plt.subplot(111, projection='3d')
@@ -109,6 +109,20 @@ with alive_bar(len(filename_list)) as bar:
         ax.zaxis.pane.fill = False
         ax.zaxis.pane.set_edgecolor('black')
         ax.grid(False)
+        
+        ax.set_xlabel('µm')
+        ax.set_ylabel('µm')
+        ax.set_zlabel('nm')
+        
+        ax.w_xaxis.line.set_color('white') 
+        ax.w_yaxis.line.set_color('white') 
+        ax.w_zaxis.line.set_color('white')
+        ax.tick_params(axis='x', colors='white')
+        ax.tick_params(axis='y', colors='white')
+        ax.tick_params(axis='z', colors='white')
+        ax.xaxis.label.set_color('white')
+        ax.yaxis.label.set_color('white')
+        ax.zaxis.label.set_color('white')
         # Create meshgrid, grid labels will be in micrometer
         X, Y = np.meshgrid(np.linspace(0, 20, len(height_array)), np.linspace(0, 20, len(height_array)))
         # Plot surface
