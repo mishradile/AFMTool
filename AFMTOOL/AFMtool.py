@@ -73,6 +73,7 @@ with alive_bar(len(filename_list)) as bar:
         plt.axis('off')
         plt.title('')
         plt.savefig(img_path_2d, bbox_inches='tight', pad_inches=0)
+        plt.close(fig)
     
         #Get height data as numpy array
         #Checked against AtomicJ, height data is in nm. 

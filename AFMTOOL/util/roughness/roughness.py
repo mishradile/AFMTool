@@ -70,9 +70,12 @@ def insert_ra(excel_file_path, ra, pol_ra, col_num):
     ws = wb["Sheet"]
     
     col_letter = get_column_letter(col_num+1)
-    ws[col_letter+'7'] = "{:.2f}".format(ra)
-    ws[col_letter+'8'] = "{:.2f}".format(pol_ra)
-    
+    try:
+        ws[col_letter+'7'] = "{:.2f}".format(ra)
+        ws[col_letter+'8'] = "{:.2f}".format(pol_ra)
+    except ValueError:
+        ws[col_letter+'7'] = ra
+        ws[col_letter+'8'] = pol_ra
     wb.save(excel_file_path)
     
     return 0
