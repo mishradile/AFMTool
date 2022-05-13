@@ -55,6 +55,8 @@ def plot_line_profile(filename_formatted, array, x, y, r):
 
     plt.savefig(img_path, bbox_inches='tight')
     
+    plt.close(fig)
+    
     avg_pol_height = np.mean(line_data[int(pol_left_lim*256/20):int(pol_right_lim*256/20)])
     
     return avg_copper_height -avg_pol_height
@@ -75,7 +77,7 @@ def insert_line_profile(filename_formatted, excel_file_path, col_num, step_heigh
     ws.add_image(line_img)
     
     #Insert step height
-    ws[col_letter + '9'] = step_height
+    ws[col_letter + '9'] = "{:.2f}".format(step_height)
     
     wb.save(excel_file_path)
     
