@@ -54,8 +54,8 @@ with alive_bar(len(filename_list)) as bar:
 
         #Correct data for slope
         #TODO: Check if algorithm is same as currently used
-        #height_data_correct_plane = height_data.correct_plane(inline=False)
-        height_data_correct_plane = height_data
+        height_data_correct_plane = height_data.correct_plane(inline=False)
+        
         #Plot of height data for Excel report 
         fig, ax = plt.subplots(1, 1, figsize=(20, 20))
 
