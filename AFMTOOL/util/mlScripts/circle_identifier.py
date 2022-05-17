@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 
 from datetime import datetime
+import matplotlib.pyplot as plt
 import pytz
 
 tz_SG = pytz.timezone('Asia/Singapore') 
@@ -31,41 +32,8 @@ def find_circles(file_name, target_dir_path):
                 param2 = 27, minRadius = 40, maxRadius = 110)
   
   
-    # # Draw circles that are detected.
-    if detected_circles is not None:
-        
-        
-  
-        # Convert the circle parameters a, b and r to integers.
-        detected_circles = np.uint16(np.around(detected_circles))
-        #cv2.circle(img, (768, 768), 1, (255, 0, 0), 3)
-        
-        # cv2.circle(img, (200, 200), 100, (255,0,  0), 2)
-        # cv2.circle(img, (200, 200), 50, (255,0,  0), 2)
-    
-        for pt in detected_circles[0, :]:
-            a, b, r = pt[0], pt[1], pt[2]
-    
-            # Draw the circumference of the circle.
-            cv2.circle(img, (a, b), r, (0, 255, 0), 2)
-    
-            # Draw a small circle (of radius 1) to show the center.
-            cv2.circle(img, (a, b), 1, (0, 0, 255), 3)
-        #cv2.imshow("Detected Circle", img)
-        #Save image
-        cv2.imwrite(target_dir_path+file_name[:-1]+".png", img)
-        #cv2.waitKey(0)
-        return detected_circles
-    else:
-        cv2.putText(img,'Error: No circles/copper contacts detected', 
-            (50, 370), 
-            cv2.FONT_HERSHEY_SIMPLEX, 
-            1,
-            (255,255,255),
-            1,
-            2)
-        cv2.imwrite(target_dir_path+file_name[:-1]+"_error"+".png", img)
-        return None
+    #Draw circles that are detected.
+    draw_detected_circles(img, detected_circles, target_dir_path, file_name)
     
 def ResizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
     dim = None
@@ -92,6 +60,8 @@ def check_radius_and_distance_and_number(detected_circles):
     #Check if radius of circles detected varies too much, and if distance between
     #circles are too small
     #Also return false if only one circle detected
+    if(detected_circles is None):
+        return False
     if(len(detected_circles)==1):
         return False
     radius_sum =0
@@ -116,11 +86,74 @@ def check_radius_and_distance_and_number(detected_circles):
     return True
 
 
-def find_using_phase():
-    return None
+def find_using_phase(file_name, target_dir_path, phase_data):
+    
+    #Remove existing ML_identified_contacts image
+    os.remove(target_dir_path+file_name[:-1]+".png")
+    
+    #Plot phase image
+    fig, ax = plt.subplots(1, 1, figsize=(20, 20))
+    phase_data.show(ax=ax)
+    fig.tight_layout()
+    img_path_2d = "../AFMTOOL/misc/temp_images/phase/"+str(file_name)+"phase_plot"
+    plt.axis('off')
+    plt.title('')
+    plt.savefig(img_path_2d, bbox_inches='tight', pad_inches=0)
+    plt.close(fig)
 
-def find_using_dif_cmap():
+    img = cv2.imread("misc/temp_images/phase/"+file_name+"phase_plot.png", cv2.IMREAD_COLOR)
+    
+    img = ResizeWithAspectRatio(img, width =768)
+
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
+    gray_blurred = cv2.medianBlur(gray,9)
+
+    detected_circles = cv2.HoughCircles(gray_blurred, 
+                    cv2.HOUGH_GRADIENT, 1, 200, param1 = 35,
+                param2 = 27, minRadius = 40, maxRadius = 110)
+
+    #Use height img from now on to draw detected circles
+    img = cv2.imread("images/"+file_name+"2d_plot.png", cv2.IMREAD_COLOR)
+    #Clear phase image
+    os.remove(img_path_2d+".png")
+    # Draw circles that are detected.
+    draw_detected_circles(img, detected_circles, target_dir_path, file_name)
+
+def find_using_dif_cmap(file_name, target_dir_path, height_array):
+    
     return None
 
 def find_using_binary_filter():
     return None
+
+
+#Share functions
+def draw_detected_circles(img, detected_circles, target_dir_path, file_name):
+    if detected_circles is not None:
+        # Convert the circle parameters a, b and r to integers.
+        detected_circles = np.uint16(np.around(detected_circles))
+        for pt in detected_circles[0, :]:
+            a, b, r = pt[0], pt[1], pt[2]
+
+            # Draw the circumference of the circle.
+            cv2.circle(img, (a, b), r, (0, 255, 0), 2)
+
+            # Draw a small circle (of radius 1) to show the center.
+            cv2.circle(img, (a, b), 1, (0, 0, 255), 3)
+        #Save image
+        cv2.imwrite(target_dir_path+file_name[:-1]+".png", img)
+        return detected_circles
+    else:
+        write_error_message(img)
+        cv2.imwrite(target_dir_path+file_name[:-1]+".png", img)
+        return None
+            
+def write_error_message(img):
+    cv2.putText(img,'Error: No circles/copper contacts detected', 
+            (50, 370), 
+            cv2.FONT_HERSHEY_SIMPLEX, 
+            1,
+            (255,255,255),
+            1,
+            2)
