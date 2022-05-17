@@ -18,17 +18,18 @@ def find_circles(file_name, target_dir_path):
     Returns coordinate of circles found
     """
     # Read image.
-    img = cv2.imread("images/"+file_name+"2d_plot.png", cv2.IMREAD_COLOR)
+    img = cv2.imread("../results/binary_filtered_imgs/"+file_name+"binary_plot.png", cv2.IMREAD_COLOR)
     img = ResizeWithAspectRatio(img, width =768)
     # Convert to grayscale.
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
-    gray_blurred = cv2.medianBlur(gray,9)
+    gray_blurred = cv2.medianBlur(gray,135)
+
     # Apply Hough transform on the blurred image.
     #TODO: Document assumptions here
     detected_circles = cv2.HoughCircles(gray_blurred, 
-                    cv2.HOUGH_GRADIENT, 1, 200, param1 = 35,
-                param2 = 27, minRadius = 40, maxRadius = 110)
+                    cv2.HOUGH_GRADIENT, 2, 200, param1 = 70,
+                param2 = 10, minRadius = 0, maxRadius = 110)
   
   
     # # Draw circles that are detected.
@@ -40,31 +41,32 @@ def find_circles(file_name, target_dir_path):
         detected_circles = np.uint16(np.around(detected_circles))
         #cv2.circle(img, (768, 768), 1, (255, 0, 0), 3)
         
-        # cv2.circle(img, (200, 200), 100, (255,0,  0), 2)
-        # cv2.circle(img, (200, 200), 50, (255,0,  0), 2)
-    
-        for pt in detected_circles[0, :]:
+        cv2.circle(gray_blurred, (200, 200), 100, (255,0,  0), 2)
+        cv2.circle(gray_blurred, (200, 200), 50, (255,0,  0), 2)
+        
+        for pt in detected_circles[0, 0:3]:
             a, b, r = pt[0], pt[1], pt[2]
     
             # Draw the circumference of the circle.
-            cv2.circle(img, (a, b), r, (0, 255, 0), 2)
+            cv2.circle(gray_blurred, (a, b), r, (0, 255, 0), 2)
     
             # Draw a small circle (of radius 1) to show the center.
-            cv2.circle(img, (a, b), 1, (0, 0, 255), 3)
+            cv2.circle(gray_blurred, (a, b), 1, (0, 0, 255), 3)
+          
         #cv2.imshow("Detected Circle", img)
         #Save image
-        cv2.imwrite(target_dir_path+file_name[:-1]+".png", img)
+        cv2.imwrite(target_dir_path+file_name[:-1]+".png", gray_blurred)
         #cv2.waitKey(0)
         return detected_circles
     else:
-        cv2.putText(img,'Error: No circles/copper contacts detected', 
+        cv2.putText(gray_blurred,'Error: No circles/copper contacts detected', 
             (50, 370), 
             cv2.FONT_HERSHEY_SIMPLEX, 
             1,
             (255,255,255),
             1,
             2)
-        cv2.imwrite(target_dir_path+file_name[:-1]+"_error"+".png", img)
+        cv2.imwrite(target_dir_path+file_name[:-1]+"_error"+".png", gray_blurred)
         return None
     
 def ResizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):

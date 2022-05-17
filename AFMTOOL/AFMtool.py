@@ -39,7 +39,10 @@ for f in os.listdir(dir):
     os.remove(os.path.join(dir, f))
 dir = '../AFMTOOL/line_profile_imgs/'
 for f in os.listdir(dir):
-    os.remove(os.path.join(dir, f))   
+    os.remove(os.path.join(dir, f))  
+dir = '../results/binary_filtered_imgs/'
+for f in os.listdir(dir):
+    os.remove(os.path.join(dir, f))    
  
 with alive_bar(len(filename_list)) as bar:
     file_no=1
@@ -79,6 +82,19 @@ with alive_bar(len(filename_list)) as bar:
         #Checked against AtomicJ, height data is in nm. 
         height_array = height_data_correct_plane.pixels
         #print(height_array)
+        height_avg = np.mean(height_array)
+        
+        binary_height_array = height_array>height_avg
+        
+        fig, ax = plt.subplots(1, 1, figsize=(20, 20))
+        plt.axis('off')
+        plt.title('')
+        plt.imshow(binary_height_array)
+        
+        fig.tight_layout()
+        img_path_binary = "../results/binary_filtered_imgs/"+str(filename_formatted)+"binary_plot"
+        plt.savefig(img_path_binary, bbox_inches='tight', pad_inches=0)
+        plt.close(fig)
         
         #Identify copper contacts
         detected_circles = find_circles(filename_formatted, ml_result_path)
