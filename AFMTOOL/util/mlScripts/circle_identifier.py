@@ -87,3 +87,40 @@ def create_ml_img_dir():
     img_dir_path = "../results/ML_identified_contacts/"+format_timestring+"/"
     os.makedirs(img_dir_path)
     return img_dir_path
+
+def check_radius_and_distance_and_number(detected_circles):
+    #Check if radius of circles detected varies too much, and if distance between
+    #circles are too small
+    #Also return false if only one circle detected
+    if(len(detected_circles)==1):
+        return False
+    radius_sum =0
+    max_rad = 0
+    min_rad = 999
+    center_list = []
+    for pt in detected_circles[0, :]:
+            a, b, r = pt[0], pt[1], pt[2]
+            radius_sum += r
+            center_list.append((a,b))
+            max_rad = max(r,max_rad)
+            min_rad = min(r,min_rad)
+    if(abs(max_rad -min_rad) >= 1.5*min_rad):
+        return False
+    avg_radius = radius_sum/len(detected_circles)
+    for i in range(len(center_list)):
+        for j in range(i+1,len(center_list)):
+            dist = ((center_list[i][0]-center_list[j][0])**2 + (center_list[i][1]-center_list[j][1])**2)**0.5
+            if dist < avg_radius*3:
+                return False
+    
+    return True
+
+
+def find_using_phase():
+    return None
+
+def find_using_dif_cmap():
+    return None
+
+def find_using_binary_filter():
+    return None
