@@ -61,7 +61,7 @@ with alive_bar(len(filename_list)) as bar:
         fig, ax = plt.subplots(1, 1, figsize=(20, 20))
 
         #phase_data.show(ax=ax[1])
-        height_data_correct_plane.show(ax=ax[0], cmap="copper")
+        height_data_correct_plane.show(ax=ax, cmap="copper")
         #amp_error_data.show(ax=ax[2])
 
         fig.tight_layout()
@@ -86,7 +86,7 @@ with alive_bar(len(filename_list)) as bar:
         if(not check_radius_and_distance_and_number(detected_circles)):
             detected_circles = find_using_phase(filename_formatted, ml_result_path, phase_data)
         if(not check_radius_and_distance_and_number(detected_circles)):
-            detected_circles = find_using_dif_cmap(filename_formatted, ml_result_path, height_array)
+            detected_circles = find_using_dif_cmap(filename_formatted, ml_result_path, height_data_correct_plane)
         if(not check_radius_and_distance_and_number(detected_circles)):
             detected_circles = find_using_binary_filter(filename_formatted, ml_result_path, height_array)
         
