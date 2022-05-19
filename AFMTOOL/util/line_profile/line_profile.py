@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 def plot_line_profile(filename_formatted, array, x, y, r):
     #Adjusting for coordinate differences between picture and numpy array
     
-    y = 256 - int(y*256/768)
+    y = int(y*256/768)
     line_data = array[y, :]
     
     avg_height = np.mean(line_data)

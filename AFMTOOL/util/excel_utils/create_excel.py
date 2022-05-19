@@ -31,7 +31,8 @@ def create_xl_template():
     sheet["A8"] = "Po roughness (nm) 2umX2um"
     sheet["A9"] = "Step height (nm) Protusion : + Dishing:-"
 
-    sheet["A10"] = "Line profile image"
+    sheet["A10"] = "Line Profile Image"
+    sheet["A11"] = "Reference Image"
     
     sheet["B1"] = "Slot ID: "
     
@@ -50,6 +51,7 @@ def create_xl_template():
     sheet["A8"].fill = blueFill
     sheet["A9"].fill = blueFill
     sheet["A10"].fill = blueFill
+    sheet["A11"].fill = blueFill
     
     
     
@@ -58,6 +60,7 @@ def create_xl_template():
     sheet.row_dimensions[6].height = 104
     sheet.row_dimensions[2].height = 30
     sheet.row_dimensions[10].height = 70
+    sheet.row_dimensions[11].height = 104
     
     sheet.column_dimensions['G'].width = 20
 

@@ -12,8 +12,18 @@ In Numpy's terminology it's Mean Absolute Deviation from mean (https://www.geeks
 
 import openpyxl
 from openpyxl.utils import get_column_letter
+import os
 
 from numpy import mean, absolute
+from matplotlib.patches import Rectangle
+import matplotlib.pyplot as plt
+from datetime import datetime
+import pytz
+
+tz_SG = pytz.timezone('Asia/Singapore') 
+datetime_SG = datetime.now(tz_SG)
+#For saving files with timestamps 
+format_timestring = datetime_SG.strftime("%m%d%Y%H%M")
 
 def find_ra(array, detected_circles):
     """ 
@@ -40,16 +50,19 @@ def find_ra(array, detected_circles):
         #Define sample area to calculate roughness 
         #used min, max in case selected center is too close to the borders
         #TODO: Record in doc coordinate system 
-        sample = array[max((256-y)-12,0):min((256-y)+12+1, 256), max(x-12,0):min(x+12+1, 256)] 
-        
+        sample = array[max(0, y-6): min(256, y+6+1), max(0,x-6):min(256, x+6+1)]
+        #Uncomment to show area used
+        # array[max(0, y-6): min(256, y+6+1), max(0,x-6):min(256, x+6+1)] =0
+        # plt.imshow(array, cmap="copper")
+        # plt.show()
         total_ra+=mean(absolute(sample - mean(sample)))
         
         #Polymer roughness 
         x_pol = x+2*r
-        y_pol = y+2*r
+        y_pol = y-2*r
         #Check at least a portion of sample area is in range
-        if((256-y_pol)-24<256 and (x_pol)-24<256):
-            pol_sample = array[max((256-y_pol)-24,0):min((256-y_pol)+24+1, 256), max(x_pol-24,0):min(x_pol+24+1, 256)] 
+        if(y_pol-12<256 and (x_pol)-12<256):
+            pol_sample = array[max((y_pol)-12,0):min((y_pol)+12+1, 256), max(x_pol-12,0):min(x_pol+12+1, 256)] 
             pol_total_ra +=mean(absolute(pol_sample - mean(pol_sample)))
             pol_area_count+=1
         
@@ -63,6 +76,8 @@ def find_ra(array, detected_circles):
     else:
         pol_ra = pol_total_ra/pol_area_count
         
+    #print([copper_ra, pol_ra])
+        
     return [copper_ra, pol_ra]
 
 def insert_ra(excel_file_path, ra, pol_ra, col_num):
@@ -71,8 +86,8 @@ def insert_ra(excel_file_path, ra, pol_ra, col_num):
     
     col_letter = get_column_letter(col_num+1)
     try:
-        ws[col_letter+'7'] = "{:.2f}".format(ra)
-        ws[col_letter+'8'] = "{:.2f}".format(pol_ra)
+        ws[col_letter+'7'] = "{:.3f}".format(ra)
+        ws[col_letter+'8'] = "{:.3f}".format(pol_ra)
     except ValueError:
         ws[col_letter+'7'] = ra
         ws[col_letter+'8'] = pol_ra
@@ -82,3 +97,19 @@ def insert_ra(excel_file_path, ra, pol_ra, col_num):
     
 
 
+def insert_ref_image(filename_formatted, excel_file_path, col_num):
+    
+    img_path  =  "../results/ref_regions_imgs/"+str(filename_formatted)+"ref_plot.png"
+    wb = openpyxl.load_workbook(excel_file_path)
+    ws = wb["Sheet"]
+    
+    col_letter = get_column_letter(col_num+1)
+    
+    line_img = openpyxl.drawing.image.Image(img_path)
+    line_img.height = 140
+    line_img.width = 140
+    
+    line_img.anchor = col_letter + '11'
+    ws.add_image(line_img)
+    
+    wb.save(excel_file_path)

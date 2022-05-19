@@ -1,6 +1,5 @@
 import time
 
-from venv import create
 import pySPM
 #print(pySPM.__version__)
 
@@ -10,9 +9,10 @@ import sys
 sys.path.append("../")
 from AFMTOOL.util.excel_utils.create_excel import create_xl_template, insert_xl, style_excel_final
 from AFMTOOL.util.mlScripts.circle_identifier import find_circles, create_ml_img_dir
-from AFMTOOL.util.roughness.roughness import find_ra, insert_ra
+from AFMTOOL.util.roughness.roughness import find_ra, insert_ra, insert_ref_image
 from AFMTOOL.util.line_profile.line_profile import insert_line_profile, plot_line_profile
 from alive_progress import alive_bar
+from matplotlib.patches import Rectangle
 
 import os
 
@@ -39,7 +39,11 @@ for f in os.listdir(dir):
     os.remove(os.path.join(dir, f))
 dir = '../AFMTOOL/line_profile_imgs/'
 for f in os.listdir(dir):
+    os.remove(os.path.join(dir, f))  
+dir = '../results/ref_regions_imgs/'
+for f in os.listdir(dir):
     os.remove(os.path.join(dir, f))   
+ 
  
 with alive_bar(len(filename_list)) as bar:
     file_no=1
@@ -54,16 +58,21 @@ with alive_bar(len(filename_list)) as bar:
 
         #Correct data for slope
         #TODO: Check if algorithm is same as currently used
-        height_data_correct_plane = height_data.correct_plane(inline=False)
+        height_data_correct_plane = height_data.corr_fit2d(inline=False, nx=2, ny=2).filter_scars_removal()
+        
+        #Get height data as numpy array
+        #Checked against AtomicJ, height data is in nm. 
+        height_array = height_data_correct_plane.pixels
         
         #Plot of height data for Excel report 
         fig, ax = plt.subplots(1, 1, figsize=(20, 20))
 
         #phase_data.show(ax=ax[0])
-        height_data_correct_plane.show(ax=ax, cmap="copper")
+        plt.imshow(height_array, cmap="copper")
         #amp_error_data.show(ax=ax[2])
 
         fig.tight_layout()
+        
         
         #Format filename for saving
         #Remove .spm at the end and replace '.' and space with '_'
@@ -72,31 +81,50 @@ with alive_bar(len(filename_list)) as bar:
         #plt.style.use('dark_background')
         plt.axis('off')
         plt.title('')
+        
         plt.savefig(img_path_2d, bbox_inches='tight', pad_inches=0)
-        plt.close(fig)
-    
-        #Get height data as numpy array
-        #Checked against AtomicJ, height data is in nm. 
-        height_array = height_data_correct_plane.pixels
-        #print(height_array)
         
         #Identify copper contacts
         detected_circles = find_circles(filename_formatted, ml_result_path)
         
+        
+
+        
+        
+        
         if(detected_circles is None):
             insert_ra(excel_file_path, "Programme Error: Could not find any contact points", "Programme Error: Could not find any contact points", file_no)
         else:
+            #Draw detected circles on 2D plot_line_profile
+            #TODO: make it into separate function
+            for pt in detected_circles[0, :]:
+                x,y, r = int(pt[0]*256/768), int(pt[1]*256/768), int(pt[2]*256/768)
+                #print(x, y, r)
+                ax.add_patch(Rectangle((x-6, y-6),
+                                12, 12,
+                                fc ='none', 
+                                ec ='g',
+                                lw = 3) )
+                ax.add_patch(Rectangle((x+2*r-12, y-2*r-12),
+                                24, 24,
+                                fc ='none', 
+                                ec ='r',
+                                lw = 3) )
+            ref_img_path = "../results/ref_regions_imgs/"+str(filename_formatted)+"ref_plot"
+            plt.savefig(ref_img_path, bbox_inches='tight', pad_inches=0)
+            plt.close(fig)
             ra, pol_ra = find_ra(height_array, detected_circles)
             
             insert_ra(excel_file_path, ra, pol_ra, file_no)
             
             step_height = plot_line_profile(filename_formatted, height_array, detected_circles[0, :][0][0], detected_circles[0, :][0][1],  detected_circles[0, :][0][2])
             insert_line_profile(filename_formatted, excel_file_path, file_no, step_height)
+            insert_ref_image(filename_formatted, excel_file_path, file_no)
 
         #Plot 3D graph
         # Create figure and add axis
 
-        fig = plt.figure(figsize=(10,10))
+        fig = plt.figure(figsize=(7,7))
         fig.patch.set_facecolor('black')
         #plt.style.use('dark_background')
         ax = plt.subplot(111, projection='3d')
