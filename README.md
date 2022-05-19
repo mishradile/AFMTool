@@ -36,6 +36,13 @@ AFM Tool for automating data analysis for  .spm files
   - Fixed decimal points to 2
   - Generated requirements.txt
 
+- 19/5/2022:
+  - Corrected for quadratic background 
+  - Corrected coordinates for taking Ra
+  - Added reference pictures row in Excel report to mark out on 2D diagram which areas are used for Ra calculations
+  - Correct d.p to 3
+  - Enlarged axis for 3D plot
+
 ## Installation 
 
     
