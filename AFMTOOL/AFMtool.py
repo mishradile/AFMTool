@@ -50,17 +50,17 @@ with alive_bar(len(filename_list)) as bar:
         #topo = scan.get_channel()
         height_data = scan.get_channel("Height Sensor") 
         #amplitude_error_data = scan.get_channel("Amplitude Error") 
-        phase_data = scan.get_channel("Phase") 
+        #phase_data = scan.get_channel("Phase") 
 
         #Correct data for slope
         #TODO: Check if algorithm is same as currently used
         height_data_correct_plane = height_data.correct_plane(inline=False)
         
         #Plot of height data for Excel report 
-        fig, ax = plt.subplots(1, 2, figsize=(20, 20))
+        fig, ax = plt.subplots(1, 1, figsize=(20, 20))
 
-        #phase_data.show(ax=ax[1])
-        height_data_correct_plane.show(ax=ax[0], cmap="copper")
+        #phase_data.show(ax=ax[0])
+        height_data_correct_plane.show(ax=ax, cmap="copper")
         #amp_error_data.show(ax=ax[2])
 
         fig.tight_layout()
