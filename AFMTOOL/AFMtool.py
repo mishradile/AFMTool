@@ -37,7 +37,7 @@ excel_file_path = create_xl_template()
 ml_result_path = create_ml_img_dir()
 
 #Clear data that no need to be stored/will be stored in Excel sheet
-dir_to_clear = ['../AFMTOOL/images/', '../AFMTOOL/line_profile_imgs/', '../results/ref_regions_imgs/']
+dir_to_clear = ['../AFMTOOL/images/', '../AFMTOOL/line_profile_imgs/', '../results/ref_regions_imgs/', '../AFMTOOL/misc/temp_images/binary_filter/', '../AFMTOOL/misc/temp_images/diff_cmap/', '../AFMTOOL/misc/temp_images/phase/']
 for dir in dir_to_clear:
     for f in os.listdir(dir):
         os.remove(os.path.join(dir, f))   
@@ -56,8 +56,7 @@ with alive_bar(len(filename_list)) as bar:
 
         #topo = scan.get_channel()
         height_data = scan.get_channel("Height Sensor") 
-        #amplitude_error_data = scan.get_channel("Amplitude Error") 
-        #phase_data = scan.get_channel("Phase") 
+        phase_data = scan.get_channel("Phase") 
 
         #Correct data for slope
         #TODO: Check if algorithm is same as currently used
@@ -71,7 +70,7 @@ with alive_bar(len(filename_list)) as bar:
         img_path_2d = draw_2d_plot(height_array, filename_formatted)
         
         #Identify copper contacts
-        detected_circles = find_circles(filename_formatted, ml_result_path)
+        detected_circles = find_circles(filename_formatted, ml_result_path, height_array, phase_data)
         
         
 
