@@ -1,0 +1,6 @@
+alive_progress==2.4.1
+matplotlib==3.3.2
+numpy==1.22.2
+openpyxl==3.0.5
+pySPM==0.2.23
+pytz==2020.1
