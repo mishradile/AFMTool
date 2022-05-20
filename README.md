@@ -46,6 +46,7 @@ AFM Tool for automating data analysis for  .spm files
 - 20/5/2022:
   - Added ref image to mark regions for line profile and step height calculations
   - Corrected errors in step height calculations
+  - Implemented multiple checks for circle recognition (If height data fail, use different color mapping, if fail again use phase data, if still fail use binary filter)
 
 ## Installation 
 
