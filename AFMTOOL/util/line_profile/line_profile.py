@@ -8,17 +8,19 @@ import matplotlib.pyplot as plt
 def plot_line_profile(filename_formatted, array, x, y, r):
     #Adjusting for coordinate differences between picture and numpy array
     
-    y = int(y*256/768)
-    line_data = array[y, :]
+    #Convert from image scale to array index
+    y_index = int(y*256/768)
+    r_index = int(r*256/768)
+    #Take average within band of width r/2
+    line_data = array[int(y_index-r_index/2): int(y_index+r_index/2), :]
+    line_data = np.mean(line_data, axis=0)
     
     avg_height = np.mean(line_data)
     
     fig_x = np.linspace(0,20,256)
     fig = plt.figure(figsize=(18,12))
     ax = plt.subplot(111)
-    #ax.plot((0,20),(avg_height,avg_height))
     ax.plot(fig_x, line_data, color ="blue")
-    #fig.tight_layout()
     ax.set_ylabel('nm', fontsize=10)
     ax.set_xlabel('μm', fontsize=10)
     
@@ -37,19 +39,22 @@ def plot_line_profile(filename_formatted, array, x, y, r):
     
     dishing = True if (avg_copper_height<avg_height) else False
     
-    #ax.plot((0,20), (avg_copper_height, avg_copper_height), color='orange')
     
     #Plot vertical lines denoting polymer
-    if(x_um>=10):
+    #Note that polymer limits are shifted inwards (towards each other) by 0.2*r from the 
+    #calculated "ideal" positions, to be safe not to touch regions of copper contacts in case 
+    #centers or radius of circles identified are not accurate 
+    if(x_um>=10): 
         pol_right_lim = x_um-r_um*1.2
         ax.plot((pol_right_lim, pol_right_lim), (min(line_data), max(line_data)), color='red', linestyle='-.')
         #Note that find_pol_limit gives index, need to convert to um
-        pol_left_lim = (20/256)*find_pol_limit(line_data, int((pol_right_lim)*256/20), avg_height, dishing, False)
+        
+        pol_left_lim = (20/256)*find_pol_limit(line_data, int((pol_right_lim)*256/20), avg_height, dishing, False)+0.2*r_um
         ax.plot((pol_left_lim, pol_left_lim), (min(line_data), max(line_data)), color='red', linestyle='-.')
     else:
         pol_left_lim = x_um+r_um*1.2
         ax.plot((pol_left_lim, pol_left_lim), (min(line_data), max(line_data)), color='red', linestyle='-.')
-        pol_right_lim = (20/256)*find_pol_limit(line_data, int((pol_left_lim)*256/20), avg_height, dishing, True)
+        pol_right_lim = (20/256)*find_pol_limit(line_data, int((pol_left_lim)*256/20), avg_height, dishing, True)-0.2*r_um
         ax.plot((pol_right_lim, pol_right_lim), (min(line_data), max(line_data)), color='red', linestyle='-.')
     img_path = "../AFMTOOL/line_profile_imgs/"+str(filename_formatted)+"line_plot"
 
@@ -59,7 +64,7 @@ def plot_line_profile(filename_formatted, array, x, y, r):
     
     avg_pol_height = np.mean(line_data[int(pol_left_lim*256/20):int(pol_right_lim*256/20)])
     
-    return avg_copper_height -avg_pol_height
+    return avg_copper_height -avg_pol_height, pol_left_lim, pol_right_lim
     
 def insert_line_profile(filename_formatted, excel_file_path, col_num, step_height):
     
@@ -77,7 +82,7 @@ def insert_line_profile(filename_formatted, excel_file_path, col_num, step_heigh
     ws.add_image(line_img)
     
     #Insert step height
-    ws[col_letter + '9'] = "{:.2f}".format(step_height)
+    ws[col_letter + '9'] = "{:.3f}".format(step_height)
     
     wb.save(excel_file_path)
     
@@ -102,3 +107,4 @@ def find_pol_limit(array, first_limit, avg_height, dishing, search_right):
                 index-=1
     
     return index
+

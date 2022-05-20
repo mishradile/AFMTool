@@ -11,5 +11,7 @@ data/**
 **.xlsx
 **/__pycache__/
 **.png
-**/ML_identified_contacts/
+**/ML_identified_contacts/**
 **.pyc
+**/ref_regions_imgs/**
+**/binary_filtered_imgs/**
