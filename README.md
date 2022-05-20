@@ -43,6 +43,10 @@ AFM Tool for automating data analysis for  .spm files
   - Correct d.p to 3
   - Enlarged axis for 3D plot
 
+- 20/5/2022:
+  - Added ref image to mark regions for line profile and step height calculations
+  - Corrected errors in step height calculations
+
 ## Installation 
 
     
