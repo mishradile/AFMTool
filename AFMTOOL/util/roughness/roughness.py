@@ -42,6 +42,7 @@ def find_ra(array, detected_circles):
     pol_total_ra =0
     circles_count=0
     pol_area_count =0
+    take_bottom_left = False
     for pt in detected_circles[0, :]:
         circles_count+=1
         x,y, r = int(pt[0]*256/768), int(pt[1]*256/768), int(pt[2]*256/768)
@@ -61,7 +62,7 @@ def find_ra(array, detected_circles):
         x_pol = x+2*r
         y_pol = y-2*r
         #Check at least a portion of sample area is in range
-        if(y_pol-12<256 and (x_pol)-12<256):
+        if(y_pol+12>0 and (x_pol)-12<256):
             pol_sample = array[max((y_pol)-12,0):min((y_pol)+12+1, 256), max(x_pol-12,0):min(x_pol+12+1, 256)] 
             pol_total_ra +=mean(absolute(pol_sample - mean(pol_sample)))
             pol_area_count+=1
@@ -70,15 +71,29 @@ def find_ra(array, detected_circles):
         copper_ra = -1
     else:
         copper_ra = total_ra/circles_count
-    
+
     if(pol_area_count==0):
-        pol_ra = -1
+        #If all polymer area out of bound, try take bottom left of each circle
+        for pt in detected_circles[0, :]:
+            x,y, r = int(pt[0]*256/768), int(pt[1]*256/768), int(pt[2]*256/768)
+            #Polymer roughness 
+            x_pol = x-2*r
+            y_pol = y+2*r
+            if(y_pol-12<256 and (x_pol)-12<256):
+                pol_sample = array[max((y_pol)-12,0):min((y_pol)+12+1, 256), max(x_pol-12,0):min(x_pol+12+1, 256)] 
+                pol_total_ra +=mean(absolute(pol_sample - mean(pol_sample)))
+                pol_area_count+=1
+        if (pol_area_count==0):
+            pol_ra = "Errored: Please calculate polymer roughness manually."
+        else:
+            pol_ra = pol_total_ra/pol_area_count
+            take_bottom_left = True
     else:
         pol_ra = pol_total_ra/pol_area_count
         
-    #print([copper_ra, pol_ra])
+    print([copper_ra, pol_ra])
         
-    return [copper_ra, pol_ra]
+    return [copper_ra, pol_ra, take_bottom_left]
 
 def insert_ra(excel_file_path, ra, pol_ra, col_num):
     wb = openpyxl.load_workbook(excel_file_path)
