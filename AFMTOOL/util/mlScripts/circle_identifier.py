@@ -96,10 +96,10 @@ def check_radius_and_distance_and_number(detected_circles):
     #circles are too small
     #Also return false if only one circle detected
     if(detected_circles is None):
-        print("none detected")
+        #print("none detected")
         return False
     if(len(detected_circles[0])==1):
-        print("one detected")
+        #print("one detected")
         return False
     radius_sum =0
     max_rad = 0
@@ -111,22 +111,22 @@ def check_radius_and_distance_and_number(detected_circles):
             center_list.append((a,b))
             max_rad = max(r,max_rad)
             min_rad = min(r,min_rad)
-    if(abs(max_rad -min_rad) >= 1.5*min_rad):
-        print("radius too different")
+    if(abs(max_rad -min_rad) >= 0.5*min_rad):
+        #print("radius too different")
         return False
     avg_radius = radius_sum/len(detected_circles[0])
     for i in range(len(center_list)-1):
         for j in range(i+1,len(center_list)):
             dist = ((center_list[i][0]-center_list[j][0])**2 + (center_list[i][1]-center_list[j][1])**2)**0.5
             if dist < avg_radius*3:
-                print("too near")
+                #print("too near")
                 return False
     
     return True
 
 def find_using_dif_cmap(file_name, target_dir_path, height_array):
     
-    print("diff cmap used for " + file_name)
+    #print("diff cmap used for " + file_name)
     
     
     #Plot image
@@ -153,7 +153,7 @@ def find_using_dif_cmap(file_name, target_dir_path, height_array):
 
 def find_using_phase(file_name, target_dir_path, phase_data):
     
-    print("Phase used for file: " + file_name)
+    #print("Phase used for file: " + file_name)
 
     #Converting phase data to array
     phase_data_correct_plane = phase_data.corr_fit2d(inline=False, nx=2, ny=2).filter_scars_removal()
@@ -184,7 +184,7 @@ def find_using_phase(file_name, target_dir_path, phase_data):
 
 
 def find_using_binary_filter(file_name, target_dir_path, height_array):
-    print("Binary filter used for " + file_name)
+    #print("Binary filter used for " + file_name)
     
     #Generate binary array    
     height_avg = np.mean(height_array)

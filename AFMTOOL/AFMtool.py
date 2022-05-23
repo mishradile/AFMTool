@@ -86,8 +86,8 @@ with alive_bar(len(filename_list)) as bar:
             
             insert_ra(excel_file_path, ra, pol_ra, file_no)
             
-            step_height, pol_left_lim, pol_right_lim = plot_line_profile(filename_formatted, height_array, detected_circles[0, :][0][0], detected_circles[0, :][0][1],  detected_circles[0, :][0][2])
-            insert_line_profile(filename_formatted, excel_file_path, file_no, step_height)
+            step_height, pol_left_lim, pol_right_lim, roll_off= plot_line_profile(filename_formatted, height_array, detected_circles[0, :][0][0], detected_circles[0, :][0][1],  detected_circles[0, :][0][2])
+            insert_line_profile(filename_formatted, excel_file_path, file_no, step_height, roll_off)
             
             draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_lim, pol_right_lim, take_bottom_left)
             insert_ref_image(filename_formatted, excel_file_path, file_no)

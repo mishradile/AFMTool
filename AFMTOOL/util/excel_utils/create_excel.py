@@ -32,16 +32,12 @@ def create_xl_template():
     sheet["A9"] = "Step height (nm) Protusion : + Dishing:-"
 
     sheet["A10"] = "Line Profile Image"
-    sheet["A11"] = "Reference Image"
+    sheet["A11"] = "Roll-off"
+    sheet["A12"] = "Reference Image"
     
     sheet["B1"] = "Slot ID: "
     
     sheet["C1"] = "CMP recipe: "
-    # sheet["H1"] = "Process: "
-    # sheet["I1"] = "Measurement: "
-    
-    #sheet["G2"] = "Step height with example: "
-    
     
     
 
@@ -52,6 +48,7 @@ def create_xl_template():
     sheet["A9"].fill = blueFill
     sheet["A10"].fill = blueFill
     sheet["A11"].fill = blueFill
+    sheet["A12"].fill = blueFill
     
     
     
@@ -60,7 +57,7 @@ def create_xl_template():
     sheet.row_dimensions[6].height = 104
     sheet.row_dimensions[2].height = 30
     sheet.row_dimensions[10].height = 70
-    sheet.row_dimensions[11].height = 104
+    sheet.row_dimensions[12].height = 104
     
     sheet.column_dimensions['G'].width = 20
 

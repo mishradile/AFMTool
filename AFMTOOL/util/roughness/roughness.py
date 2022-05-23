@@ -91,7 +91,7 @@ def find_ra(array, detected_circles):
     else:
         pol_ra = pol_total_ra/pol_area_count
         
-    print([copper_ra, pol_ra])
+    #print([copper_ra, pol_ra])
         
     return [copper_ra, pol_ra, take_bottom_left]
 
@@ -124,7 +124,7 @@ def insert_ref_image(filename_formatted, excel_file_path, col_num):
     line_img.height = 140
     line_img.width = 140
     
-    line_img.anchor = col_letter + '11'
+    line_img.anchor = col_letter + '12'
     ws.add_image(line_img)
     
     wb.save(excel_file_path)

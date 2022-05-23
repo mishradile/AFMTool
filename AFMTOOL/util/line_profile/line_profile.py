@@ -30,8 +30,8 @@ def plot_line_profile(filename_formatted, array, x, y, r):
     #Take range slightly smaller than r to be safe
     left_lim = x_um-r_um*0.8
     right_lim = x_um+r_um*0.8
-    ax.plot((left_lim, left_lim), (min(line_data), max(line_data)), color='black', linestyle='-.')
-    ax.plot((right_lim, right_lim), (min(line_data), max(line_data)), color='black', linestyle='-.')
+    ax.plot((left_lim, left_lim), (min(line_data), 0.1+max(line_data)), color='black', linestyle='-.')
+    ax.plot((right_lim, right_lim), (min(line_data), 0.1+max(line_data)), color='black', linestyle='-.')
     
     left_lim_index = int(left_lim*256/20)
     right_lim_index = int(right_lim*256/20)
@@ -46,27 +46,41 @@ def plot_line_profile(filename_formatted, array, x, y, r):
     #centers or radius of circles identified are not accurate 
     if(x_um>=10): 
         pol_right_lim = x_um-r_um*1.2
-        ax.plot((pol_right_lim, pol_right_lim), (min(line_data), max(line_data)), color='red', linestyle='-.')
+        ax.plot((pol_right_lim, pol_right_lim), (min(line_data), 0.1+max(line_data)), color='red', linestyle='-.')
         #Note that find_pol_limit gives index, need to convert to um
         
-        pol_left_lim = (20/256)*find_pol_limit(line_data, int((pol_right_lim)*256/20), avg_height, dishing, False)+0.2*r_um
-        ax.plot((pol_left_lim, pol_left_lim), (min(line_data), max(line_data)), color='red', linestyle='-.')
+        #Used for calculation of roll off
+        cut_off_limit = find_pol_limit(line_data, int((pol_right_lim)*256/20), avg_height, dishing, False)
+        cut_off_height = line_data[cut_off_limit]
+        ax.plot(((20/256)*cut_off_limit, (20/256)*cut_off_limit), (min(line_data), 0.1+max(line_data)), color='green', linestyle='--')
+        pol_left_lim = (20/256)*cut_off_limit+0.2*r_um
+        ax.plot((pol_left_lim, pol_left_lim), (min(line_data), 0.1+max(line_data)), color='red', linestyle='-.')
     else:
         pol_left_lim = x_um+r_um*1.2
-        ax.plot((pol_left_lim, pol_left_lim), (min(line_data), max(line_data)), color='red', linestyle='-.')
-        pol_right_lim = (20/256)*find_pol_limit(line_data, int((pol_left_lim)*256/20), avg_height, dishing, True)-0.2*r_um
-        ax.plot((pol_right_lim, pol_right_lim), (min(line_data), max(line_data)), color='red', linestyle='-.')
+        ax.plot((pol_left_lim, pol_left_lim), (min(line_data), 0.1+max(line_data)), color='red', linestyle='-.')
+        cut_off_limit = find_pol_limit(line_data, int((pol_left_lim)*256/20), avg_height, dishing, True)
+        cut_off_height = line_data[cut_off_limit]
+        ax.plot(((20/256)*cut_off_limit, (20/256)*cut_off_limit), (min(line_data), 0.1+max(line_data)), color='green', linestyle='--')
+        pol_right_lim = (20/256)*cut_off_limit-0.2*r_um
+        ax.plot((pol_right_lim, pol_right_lim), (min(line_data), 0.1+max(line_data)), color='red', linestyle='-.')
     img_path = "../AFMTOOL/line_profile_imgs/"+str(filename_formatted)+"line_plot"
-
+    
+    #Plot roll off lines
+    pol_center = int((256/20)*(pol_left_lim+pol_right_lim)/2)
+    pol_center_height = line_data[pol_center]
+    ax.plot(((20/256)*pol_center, (20/256)*pol_center), (min(line_data), 0.1+max(line_data)), color='green', linestyle='--')
     plt.savefig(img_path, bbox_inches='tight')
     
     plt.close(fig)
     
     avg_pol_height = np.mean(line_data[int(pol_left_lim*256/20):int(pol_right_lim*256/20)])
     
-    return avg_copper_height -avg_pol_height, pol_left_lim, pol_right_lim
+    #Calculate roll off
     
-def insert_line_profile(filename_formatted, excel_file_path, col_num, step_height):
+    roll_off = pol_center_height - cut_off_height
+    return avg_copper_height -avg_pol_height, pol_left_lim, pol_right_lim, roll_off
+    
+def insert_line_profile(filename_formatted, excel_file_path, col_num, step_height, roll_off):
     
     img_path  = "../AFMTOOL/line_profile_imgs/"+str(filename_formatted)+"line_plot.png"
     wb = openpyxl.load_workbook(excel_file_path)
@@ -83,6 +97,7 @@ def insert_line_profile(filename_formatted, excel_file_path, col_num, step_heigh
     
     #Insert step height
     ws[col_letter + '9'] = "{:.3f}".format(step_height)
+    ws[col_letter + '11'] = "{:.3f}".format(roll_off)
     
     wb.save(excel_file_path)
     
@@ -108,3 +123,6 @@ def find_pol_limit(array, first_limit, avg_height, dishing, search_right):
     
     return index
 
+
+
+    
