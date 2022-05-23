@@ -111,7 +111,7 @@ def check_radius_and_distance_and_number(detected_circles):
             center_list.append((a,b))
             max_rad = max(r,max_rad)
             min_rad = min(r,min_rad)
-    if(abs(max_rad -min_rad) >= 1.5*min_rad):
+    if(abs(max_rad -min_rad) >= 0.5*min_rad):
         print("radius too different")
         return False
     avg_radius = radius_sum/len(detected_circles[0])
