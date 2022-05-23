@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d.axes3d import Axes3D
 
 def draw_2d_plot(height_array, filename_formatted):
     #Plot of height data for Excel report 
@@ -19,6 +20,7 @@ def draw_2d_plot(height_array, filename_formatted):
     plt.title('')
     
     plt.savefig(img_path_2d, bbox_inches='tight', pad_inches=0)
+    plt.close(fig)
     
     return img_path_2d
 
@@ -27,7 +29,7 @@ def draw_3d_plot(height_array, filename_formatted):
     #Plot 3D graph
     # Create figure and add axis
 
-    fig = plt.figure(figsize=(7,7))
+    fig = plt.figure(figsize=(8,8))
     fig.patch.set_facecolor('black')
     #plt.style.use('dark_background')
     ax = plt.subplot(111, projection='3d')
@@ -54,6 +56,9 @@ def draw_3d_plot(height_array, filename_formatted):
     ax.xaxis.label.set_color('white')
     ax.yaxis.label.set_color('white')
     ax.zaxis.label.set_color('white')
+    #Scale axis
+    ax.get_proj = lambda: np.dot(Axes3D.get_proj(ax), np.diag([1, 1, 0.5, 1]))
+
     # Create meshgrid, grid labels will be in micrometer
     X, Y = np.meshgrid(np.linspace(0, 20, len(height_array)), np.linspace(0, 20, len(height_array)))
     # Plot surface
@@ -62,7 +67,8 @@ def draw_3d_plot(height_array, filename_formatted):
 
     fig.tight_layout()
     img_path_3d = "../AFMTOOL/images/"+str(filename_formatted)+"3d_plot"
-    plt.savefig(img_path_3d)  
+    
+    plt.savefig(img_path_3d, bbox_inches='tight', pad_inches=0)  
     plt.close(fig)
     
     return img_path_3d

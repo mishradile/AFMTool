@@ -31,6 +31,8 @@ def find_circles(file_name, target_dir_path, height_array, phase_data):
     detected_circles = cv2.HoughCircles(gray_blurred, 
                     cv2.HOUGH_GRADIENT, 1, 200, param1 = 35,
                 param2 = 27, minRadius = 40, maxRadius = 110)
+    #Only take 5 best circles
+    detected_circles = detected_circles[:, 0:5]
   
     if(check_radius_and_distance_and_number(detected_circles) == False):
         detected_circles = find_using_dif_cmap(file_name, target_dir_path, height_array)
