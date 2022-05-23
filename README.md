@@ -85,5 +85,8 @@ AFMTOOL/
   - Implemented multiple checks for circle recognition (If height data fail, use different color mapping, if fail again use phase data, if still fail use binary filter)
   - Updated docs for usage and installation instructions
 
+- 23/5/2022:
+  - Added calculations for roll off
+
 ## Notes on possible changes to measurement methods
 - Obtain step height using height histogram instead of line profile?
