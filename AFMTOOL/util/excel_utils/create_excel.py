@@ -32,7 +32,7 @@ def create_xl_template():
     sheet["A9"] = "Step height (nm) Protusion : + Dishing:-"
 
     sheet["A10"] = "Line Profile Image"
-    sheet["A11"] = "Roll-off"
+    sheet["A11"] = "Roll-off (nm)"
     sheet["A12"] = "Reference Image"
     
     sheet["B1"] = "Slot ID: "
