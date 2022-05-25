@@ -14,6 +14,7 @@ from AFMTOOL.util.roughness.roughness import find_ra, insert_ra, insert_ref_imag
 from AFMTOOL.util.line_profile.line_profile import insert_line_profile, plot_line_profile
 from AFMTOOL.util.ref_imgs.draw_ref_imgs import draw_ref_imgs
 from AFMTOOL.util.draw_2d_3d_imgs.draw_imgs import draw_2d_plot, draw_3d_plot
+from AFMTOOL.util.masking.masking import get_mask
 from alive_progress import alive_bar
 
 
@@ -70,10 +71,8 @@ with alive_bar(len(filename_list)) as bar:
         img_path_2d = draw_2d_plot(height_array, filename_formatted)
         
         #Identify copper contacts
+        #Will return all circles detected, for use of generating mask. Later will restrict to using only best 3 circles for generating roughness.
         detected_circles = find_circles(filename_formatted, ml_result_path, height_array, phase_data)
-        
-        
-
         
         
         
@@ -81,7 +80,14 @@ with alive_bar(len(filename_list)) as bar:
             insert_ra(excel_file_path, "Programme Error: Could not find any contact points", "Programme Error: Could not find any contact points", file_no)
         else:
             
+            #Mask is a binary numpy array with 0 in squares containing a detected circle
+            mask = get_mask(detected_circles)
             
+            height_data_flattened_with_mask = height_data.corr_fit2d(mask = mask, inline=False, nx=3, ny=3).filter_scars_removal()
+            height_array = height_data_flattened_with_mask.pixels
+            
+            #Use only best 3 circles detected for roughness calculations
+            detected_circles = detected_circles[:, 0:3]
             ra, pol_ra, take_bottom_left = find_ra(height_array, detected_circles)
             
             insert_ra(excel_file_path, ra, pol_ra, file_no)

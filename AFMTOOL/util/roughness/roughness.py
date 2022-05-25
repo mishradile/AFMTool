@@ -56,6 +56,7 @@ def find_ra(array, detected_circles):
         # array[max(0, y-6): min(256, y+6+1), max(0,x-6):min(256, x+6+1)] =0
         # plt.imshow(array, cmap="copper")
         # plt.show()
+        print(mean(absolute(sample - mean(sample))))
         total_ra+=mean(absolute(sample - mean(sample)))
         
         #Polymer roughness 
@@ -73,12 +74,12 @@ def find_ra(array, detected_circles):
         copper_ra = total_ra/circles_count
 
     if(pol_area_count==0):
-        #If all polymer area out of bound, try take bottom left of each circle
         for pt in detected_circles[0, :]:
             x,y, r = int(pt[0]*256/768), int(pt[1]*256/768), int(pt[2]*256/768)
             #Polymer roughness 
             x_pol = x-2*r
             y_pol = y+2*r
+            #If all polymer area out of bound, try take bottom left of each circle
             if(y_pol-12<256 and (x_pol)-12<256):
                 pol_sample = array[max((y_pol)-12,0):min((y_pol)+12+1, 256), max(x_pol-12,0):min(x_pol+12+1, 256)] 
                 pol_total_ra +=mean(absolute(pol_sample - mean(pol_sample)))
@@ -91,7 +92,7 @@ def find_ra(array, detected_circles):
     else:
         pol_ra = pol_total_ra/pol_area_count
         
-    #print([copper_ra, pol_ra])
+    print([copper_ra, pol_ra])
         
     return [copper_ra, pol_ra, take_bottom_left]
 
