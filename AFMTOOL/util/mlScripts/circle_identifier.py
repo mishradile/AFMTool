@@ -49,18 +49,18 @@ def find_circles(file_name, target_dir_path, height_array, phase_data):
         # Convert the circle parameters a, b and r to integers.
         detected_circles = np.uint16(np.around(detected_circles))
 
+        # Uncomment to generate image of identified circles
+        # for pt in detected_circles[0, :]:
+        #     a, b, r = pt[0], pt[1], pt[2]
     
-        for pt in detected_circles[0, :]:
-            a, b, r = pt[0], pt[1], pt[2]
+        #     # Draw the circumference of the circle.
+        #     cv2.circle(img, (a, b), r, (0, 255, 0), 2)
     
-            # Draw the circumference of the circle.
-            cv2.circle(img, (a, b), r, (0, 255, 0), 2)
-    
-            # Draw a small circle (of radius 1) to show the center.
-            cv2.circle(img, (a, b), 1, (0, 0, 255), 3)
-        #cv2.imshow("Detected Circle", img)
-        #Save image
-        cv2.imwrite(target_dir_path+file_name[:-1]+".png", img)
+        #     # Draw a small circle (of radius 1) to show the center.
+        #     cv2.circle(img, (a, b), 1, (0, 0, 255), 3)
+        # #cv2.imshow("Detected Circle", img)
+        # #Save image
+        # cv2.imwrite(target_dir_path+file_name[:-1]+".png", img)
         #cv2.waitKey(0)
         return detected_circles
     else:
