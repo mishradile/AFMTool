@@ -27,13 +27,15 @@ def create_xl_template():
     sheet["A3"] = "File Name:"
     sheet["A5"] = "Top View"
     sheet["A6"] = "3D View"
-    sheet["A7"] = "Cu Roughness(nm) 1umX1um"
-    sheet["A8"] = "Po roughness (nm) 2umX2um"
+    sheet["A7"] = "Cu Roughness Average(nm) 1umX1um"
+    sheet["A8"] = "Po Roughness Average(nm) 2umX2um"
     sheet["A9"] = "Step height (nm) Protusion : + Dishing:-"
 
     sheet["A10"] = "Line Profile Image"
     sheet["A11"] = "Roll-off (nm)"
     sheet["A12"] = "Reference Image"
+    sheet["A13"] = "List of measured Cu roughness (nm)"
+    sheet["A14"] = "List of measured polymer roughness (nm)"
     
     sheet["B1"] = "Slot ID: "
     
@@ -49,6 +51,8 @@ def create_xl_template():
     sheet["A10"].fill = blueFill
     sheet["A11"].fill = blueFill
     sheet["A12"].fill = blueFill
+    sheet["A13"].fill = blueFill
+    sheet["A14"].fill = blueFill
     
     
     

@@ -43,8 +43,6 @@ def find_circles(file_name, height_array, phase_data):
     # Draw circles that are detected.
     if detected_circles is not None:
         
-        #Only take 5 best circles
-        detected_circles = detected_circles[:, 0:5]
   
         # Convert the circle parameters a, b and r to integers.
         detected_circles = np.uint16(np.around(detected_circles))
@@ -148,7 +146,7 @@ def find_using_dif_cmap(file_name, height_array):
                 param2 = 27, minRadius = 40, maxRadius = 110)
 
     #Only returns best 3 circles detected
-    return detected_circles[:, 0:3]
+    return detected_circles
 
 def find_using_phase(file_name, phase_data):
     
@@ -178,7 +176,7 @@ def find_using_phase(file_name, phase_data):
                     cv2.HOUGH_GRADIENT, 1, 200, param1 = 70,
                 param2 = 27, minRadius = 40, maxRadius = 110)
     
-    return detected_circles[:, 0:3]
+    return detected_circles
     
 
 
@@ -208,6 +206,6 @@ def find_using_binary_filter(file_name, height_array):
                     cv2.HOUGH_GRADIENT, 2, 200, param1 = 70,
                 param2 = 10, minRadius = 0, maxRadius = 110)
     
-    return detected_circles[:, 0:3]
+    return detected_circles
 
 

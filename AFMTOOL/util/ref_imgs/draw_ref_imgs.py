@@ -9,6 +9,8 @@ def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_l
     fig, ax = plt.subplots(1, 1, figsize=(20, 20))
     #phase_data.show(ax=ax[0])
     plt.imshow(height_array, cmap="copper")
+    cu_count = 1
+    pol_count=1
     
     for pt in detected_circles[0, :]:
         x,y, r = int(pt[0]*256/768), int(pt[1]*256/768), int(pt[2]*256/768)
@@ -18,6 +20,9 @@ def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_l
                         fc ='none', 
                         ec ='g',
                         lw = 3) )
+
+        plt.text(x-6, y-2, cu_count, fontsize=25)
+        cu_count+=1
         #Square where polymer Ra is calculated
         if(not take_bottom_left):
             ax.add_patch(Rectangle((x+2*r-12, y-2*r-12),
@@ -25,12 +30,16 @@ def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_l
                             fc ='none', 
                             ec ='r',
                             lw = 3) )
+            plt.text(x+2*r-12, y-2*r+12, pol_count, fontsize=25)
+            pol_count+=1
         else:
             ax.add_patch(Rectangle((x-2*r-12, y+2*r-12),
                 24, 24,
                 fc ='none', 
                 ec ='r',
-                lw = 3) )          
+                lw = 3) )
+            plt.text(x-2*r+10, y-2*r-10, pol_count, fontsize=25)
+            pol_count+=1          
     #Draw boundaries where line profile is taken 
     best_circle_x = int(detected_circles[0][0][0]*256/768)
     best_circle_y = int(detected_circles[0][0][1]*256/768)
