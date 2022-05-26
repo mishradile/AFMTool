@@ -15,7 +15,7 @@ datetime_SG = datetime.now(tz_SG)
 format_timestring = datetime_SG.strftime("%m%d%Y%H%M")
 
 #Main function
-def find_circles(file_name, target_dir_path, height_array, phase_data):
+def find_circles(file_name, height_array, phase_data):
     """ 
     Returns coordinate of circles found
     """
@@ -34,11 +34,11 @@ def find_circles(file_name, target_dir_path, height_array, phase_data):
     
   
     if(check_radius_and_distance_and_number(detected_circles) == False):
-        detected_circles = find_using_dif_cmap(file_name, target_dir_path, height_array)
+        detected_circles = find_using_dif_cmap(file_name, height_array)
     if(check_radius_and_distance_and_number(detected_circles) == False):
-        detected_circles = find_using_phase(file_name, target_dir_path, phase_data)
+        detected_circles = find_using_phase(file_name, phase_data)
     if(check_radius_and_distance_and_number(detected_circles) == False):
-        detected_circles = find_using_binary_filter(file_name, target_dir_path, height_array)
+        detected_circles = find_using_binary_filter(file_name, height_array)
         
     # Draw circles that are detected.
     if detected_circles is not None:
@@ -64,14 +64,14 @@ def find_circles(file_name, target_dir_path, height_array, phase_data):
         #cv2.waitKey(0)
         return detected_circles
     else:
-        cv2.putText(img,'Error: No circles/copper contacts detected', 
-            (50, 370), 
-            cv2.FONT_HERSHEY_SIMPLEX, 
-            1,
-            (255,255,255),
-            1,
-            2)
-        cv2.imwrite(target_dir_path+file_name[:-1]+"_error"+".png", img)
+        # cv2.putText(img,'Error: No circles/copper contacts detected', 
+        #     (50, 370), 
+        #     cv2.FONT_HERSHEY_SIMPLEX, 
+        #     1,
+        #     (255,255,255),
+        #     1,
+        #     2)
+        # cv2.imwrite(target_dir_path+file_name[:-1]+"_error"+".png", img)
         return None
     
 def ResizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
@@ -89,11 +89,6 @@ def ResizeWithAspectRatio(image, width=None, height=None, inter=cv2.INTER_AREA):
 
     return cv2.resize(image, dim, interpolation=inter)
 
-def create_ml_img_dir():
-    #Make directory to store images for manual confirmation
-    img_dir_path = "../results/ML_identified_contacts/"+format_timestring+"/"
-    os.makedirs(img_dir_path)
-    return img_dir_path
 
 def check_radius_and_distance_and_number(detected_circles):
     #Check if radius of circles detected varies too much, and if distance between
@@ -128,7 +123,7 @@ def check_radius_and_distance_and_number(detected_circles):
     
     return True
 
-def find_using_dif_cmap(file_name, target_dir_path, height_array):
+def find_using_dif_cmap(file_name, height_array):
     
     #print("diff cmap used for " + file_name)
     
@@ -155,7 +150,7 @@ def find_using_dif_cmap(file_name, target_dir_path, height_array):
     #Only returns best 3 circles detected
     return detected_circles[:, 0:3]
 
-def find_using_phase(file_name, target_dir_path, phase_data):
+def find_using_phase(file_name, phase_data):
     
     #print("Phase used for file: " + file_name)
 
@@ -187,7 +182,7 @@ def find_using_phase(file_name, target_dir_path, phase_data):
     
 
 
-def find_using_binary_filter(file_name, target_dir_path, height_array):
+def find_using_binary_filter(file_name, height_array):
     #print("Binary filter used for " + file_name)
     
     #Generate binary array    

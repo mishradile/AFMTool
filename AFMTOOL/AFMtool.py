@@ -4,12 +4,10 @@ import time
 import pySPM
 #print(pySPM.__version__)
 
-import numpy as np
-import matplotlib.pyplot as plt
 import sys
 sys.path.append("../")
 from AFMTOOL.util.excel_utils.create_excel import create_xl_template, insert_xl, style_excel_final
-from AFMTOOL.util.mlScripts.circle_identifier import find_circles, create_ml_img_dir
+from AFMTOOL.util.mlScripts.circle_identifier import find_circles
 from AFMTOOL.util.roughness.roughness import find_ra, insert_ra, insert_ref_image
 from AFMTOOL.util.line_profile.line_profile import insert_line_profile, plot_line_profile
 from AFMTOOL.util.ref_imgs.draw_ref_imgs import draw_ref_imgs
@@ -33,8 +31,6 @@ start_time = time.time()
 
 #Directory to store generated Excel reports
 excel_file_path = create_xl_template()
-#Directory to store ML generated imgs
-ml_result_path = create_ml_img_dir()
 
 #Clear data that no need to be stored/will be stored in Excel sheet
 dir_to_clear = ['../AFMTOOL/images/', '../AFMTOOL/line_profile_imgs/', '../results/ref_regions_imgs/', '../AFMTOOL/misc/temp_images/binary_filter/', '../AFMTOOL/misc/temp_images/diff_cmap/', '../AFMTOOL/misc/temp_images/phase/']
@@ -70,7 +66,7 @@ with alive_bar(len(filename_list)) as bar:
         img_path_2d = draw_2d_plot(height_array, filename_formatted)
         
         #Identify copper contacts
-        detected_circles = find_circles(filename_formatted, ml_result_path, height_array, phase_data)
+        detected_circles = find_circles(filename_formatted, height_array, phase_data)
         
         
 
