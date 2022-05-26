@@ -43,8 +43,12 @@ def find_ra(array, detected_circles):
     circles_count=0
     pol_area_count =0
     take_bottom_left = False
+    #Using string to store as list gives some problem with formating decimals
+    cu_ra_list=""
+    pol_ra_list =""
     for pt in detected_circles[0, :]:
         circles_count+=1
+        
         x,y, r = int(pt[0]*256/768), int(pt[1]*256/768), int(pt[2]*256/768)
     
         
@@ -56,7 +60,8 @@ def find_ra(array, detected_circles):
         # array[max(0, y-6): min(256, y+6+1), max(0,x-6):min(256, x+6+1)] =0
         # plt.imshow(array, cmap="copper")
         # plt.show()
-        print(mean(absolute(sample - mean(sample))))
+        #print(mean(absolute(sample - mean(sample))))
+        cu_ra_list+=str("{:.3f}".format(mean(absolute(sample - mean(sample)))))+"/"
         total_ra+=mean(absolute(sample - mean(sample)))
         
         #Polymer roughness 
@@ -67,6 +72,8 @@ def find_ra(array, detected_circles):
             pol_sample = array[max((y_pol)-12,0):min((y_pol)+12+1, 256), max(x_pol-12,0):min(x_pol+12+1, 256)] 
             pol_total_ra +=mean(absolute(pol_sample - mean(pol_sample)))
             pol_area_count+=1
+            pol_ra_list+=str("{:.3f}".format(mean(absolute(pol_sample - mean(pol_sample)))))+"/"
+            
         
     if(circles_count==0):
         copper_ra = -1
@@ -83,6 +90,7 @@ def find_ra(array, detected_circles):
             if(y_pol-12<256 and (x_pol)-12<256):
                 pol_sample = array[max((y_pol)-12,0):min((y_pol)+12+1, 256), max(x_pol-12,0):min(x_pol+12+1, 256)] 
                 pol_total_ra +=mean(absolute(pol_sample - mean(pol_sample)))
+                pol_ra_list+= "{:.3f}".format(mean(absolute(pol_sample - mean(pol_sample))))+"/"
                 pol_area_count+=1
         if (pol_area_count==0):
             pol_ra = "Errored: Please calculate polymer roughness manually."
@@ -92,11 +100,11 @@ def find_ra(array, detected_circles):
     else:
         pol_ra = pol_total_ra/pol_area_count
         
-    print([copper_ra, pol_ra])
+    #print([copper_ra, pol_ra])
         
-    return [copper_ra, pol_ra, take_bottom_left]
+    return copper_ra, pol_ra, take_bottom_left, cu_ra_list, pol_ra_list
 
-def insert_ra(excel_file_path, ra, pol_ra, col_num):
+def insert_ra(excel_file_path, ra, pol_ra, col_num, cu_ra_list, pol_ra_list):
     wb = openpyxl.load_workbook(excel_file_path)
     ws = wb["Sheet"]
     
@@ -104,6 +112,8 @@ def insert_ra(excel_file_path, ra, pol_ra, col_num):
     try:
         ws[col_letter+'7'] = "{:.3f}".format(ra)
         ws[col_letter+'8'] = "{:.3f}".format(pol_ra)
+        ws[col_letter+'13'] = cu_ra_list
+        ws[col_letter+'14'] = pol_ra_list
     except ValueError:
         ws[col_letter+'7'] = ra
         ws[col_letter+'8'] = pol_ra
