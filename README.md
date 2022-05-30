@@ -51,8 +51,8 @@ Flags:
 
   ```
   python3 AFMTOOL.py -E 1,3,4 
-
   ```
+  Note: The `-E` command should only be used if you're only selected one file to analyse, as it will be applied for all files selected. i.e The above code will exclude the first, third and fourth circles for all files selected. 
 
 ## Troubleshooting
 - If after typing in `python3 AFMtool.py`, the File Explorer windows does not pop up after a long time (~20s), try pressing Ctrl+C to terminate the process. If the process terminates successfully, there should be a prompt message stating so. Then type in `python3 AFMtool.py` again to restart the process. If the terminal doesn't respond to Ctrl+C also, close the terminal and restart from step 1. 

@@ -100,17 +100,17 @@ with alive_bar(len(filename_list)) as bar:
                 detected_circles = detected_circles[:, 0:3]
             
             #Convert string to list, if None give empty list
-            args.exclude = [] if args.exclude is None else list(map(int, args.exclude.split(',')))
+            exclude_list = [] if args.exclude is None else list(map(int, args.exclude.split(',')))
             #Find index of best cirlce not excluded
             best_circle_index =0
-            while(best_circle_index+1 in args.exclude):
+            while(best_circle_index+1 in exclude_list):
                 best_circle_index+=1
-            ra, pol_ra, take_bottom_left, cu_ra_list, pol_ra_list = find_ra(height_array, detected_circles, args.exclude)
+            ra, pol_ra, take_bottom_left, cu_ra_list, pol_ra_list = find_ra(height_array, detected_circles, exclude_list)
             
             insert_ra(excel_file_path, ra, pol_ra, file_no, cu_ra_list, pol_ra_list)
             step_height, pol_left_lim, pol_right_lim, roll_off= plot_line_profile(filename_formatted, height_array, detected_circles[0, :][best_circle_index][0], detected_circles[0, :][best_circle_index][1],  detected_circles[0, :][best_circle_index][2])
             insert_line_profile(filename_formatted, excel_file_path, file_no, step_height, roll_off)
-            draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_lim, pol_right_lim, take_bottom_left, args.exclude, best_circle_index)
+            draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_lim, pol_right_lim, take_bottom_left, exclude_list, best_circle_index)
             insert_ref_image(filename_formatted, excel_file_path, file_no)
 
         #Plot 3D graph
