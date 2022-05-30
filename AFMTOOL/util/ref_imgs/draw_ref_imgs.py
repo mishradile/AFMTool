@@ -25,21 +25,27 @@ def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_l
         cu_count+=1
         #Square where polymer Ra is calculated
         if(not take_bottom_left):
-            ax.add_patch(Rectangle((x+2*r-12, y-2*r-12),
-                            24, 24,
-                            fc ='none', 
-                            ec ='r',
-                            lw = 3) )
-            plt.text(x+2*r-12, y-2*r+12, pol_count, fontsize=25)
-            pol_count+=1
+            if(x+2*r-12<256 and y-2*r+12>0):
+                ax.add_patch(Rectangle((x+2*r-12, y-2*r-12),
+                                24, 24,
+                                fc ='none', 
+                                ec ='r',
+                                lw = 3) )
+                #Place text at bottom left of box
+                plt.text(x+2*r-12, y-2*r+12, pol_count, fontsize=25)
+                pol_count+=1
         else:
-            ax.add_patch(Rectangle((x-2*r-12, y+2*r-12),
-                24, 24,
-                fc ='none', 
-                ec ='r',
-                lw = 3) )
-            plt.text(x-2*r+10, y-2*r-10, pol_count, fontsize=25)
-            pol_count+=1          
+            x_pol = x-2*r
+            y_pol = y+2*r
+            #If all polymer area out of bound, try take bottom left of each circle
+            if(y_pol-12<256 and (x_pol)-12<256):
+                ax.add_patch(Rectangle((x-2*r-12, y+2*r-12),
+                    24, 24,
+                    fc ='none', 
+                    ec ='r',
+                    lw = 3) )
+                plt.text(x-2*r+12, y+2*r-12, pol_count, fontsize=25)
+                pol_count+=1          
     #Draw boundaries where line profile is taken 
     best_circle_x = int(detected_circles[0][0][0]*256/768)
     best_circle_y = int(detected_circles[0][0][1]*256/768)
