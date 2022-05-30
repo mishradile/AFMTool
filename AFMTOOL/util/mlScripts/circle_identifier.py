@@ -34,21 +34,21 @@ def find_circles(file_name, height_array, phase_data, min_flag, max_flag, pitch_
     # User likely to input the actual min, max radius, need to modify to give tolerance.  
     # Default min, max assumed is min = 3um, max = 5um. 
     # Note minRadius and maxRadius are scaled for input into HoughCircles 
-    minRadiusHough = 40 if min_flag is None else int(40*min_flag/3)
-    maxRadiusHough = 110 if max_flag is None else int(110*max_flag/5)
-    minDistance =200 if pitch_flag is None else int()
+    minRadiusHough = 40 if min_flag is None else int(min_flag*768/20-10) #+/- 10 for tolerance
+    maxRadiusHough = 110 if max_flag is None else int(max_flag*768/20+10)
+    minDistance =200 if pitch_flag is None else int(pitch_flag*768/20-10)
     
     detected_circles = cv2.HoughCircles(gray_blurred, 
-                    cv2.HOUGH_GRADIENT, 1, 200, param1 = 35,
+                    cv2.HOUGH_GRADIENT, 1, minDistance, param1 = 35,
                 param2 = 27, minRadius = minRadiusHough, maxRadius = maxRadiusHough)
     
   
     if(check_radius_and_distance_and_number(detected_circles) == False):
-        detected_circles = find_using_dif_cmap(file_name, height_array,minRadiusHough, maxRadiusHough)
+        detected_circles = find_using_dif_cmap(file_name, height_array,minRadiusHough, maxRadiusHough,minDistance)
     if(check_radius_and_distance_and_number(detected_circles) == False):
-        detected_circles = find_using_phase(file_name, phase_data,minRadiusHough, maxRadiusHough)
+        detected_circles = find_using_phase(file_name, phase_data,minRadiusHough, maxRadiusHough,minDistance)
     if(check_radius_and_distance_and_number(detected_circles) == False):
-        detected_circles = find_using_binary_filter(file_name, height_array,min_flag, maxRadiusHough) #Note min_flag is passed instead 
+        detected_circles = find_using_binary_filter(file_name, height_array,min_flag, maxRadiusHough,minDistance) #Note min_flag is passed instead 
         
     # Draw circles that are detected.
     if detected_circles is not None:
@@ -131,7 +131,7 @@ def check_radius_and_distance_and_number(detected_circles):
     
     return True
 
-def find_using_dif_cmap(file_name, height_array, minR, maxR):
+def find_using_dif_cmap(file_name, height_array, minR, maxR,minDistance):
     
     #print("diff cmap used for " + file_name)
     
@@ -152,13 +152,13 @@ def find_using_dif_cmap(file_name, height_array, minR, maxR):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     gray_blurred = cv2.medianBlur(gray,15)
     detected_circles = cv2.HoughCircles(gray_blurred, 
-                    cv2.HOUGH_GRADIENT, 1, 200, param1 = 35,
+                    cv2.HOUGH_GRADIENT, 1, minDistance, param1 = 35,
                 param2 = 27, minRadius = minR, maxRadius = maxR)
 
     #Only returns best 3 circles detected
     return detected_circles
 
-def find_using_phase(file_name, phase_data, minR, maxR):
+def find_using_phase(file_name, phase_data, minR, maxR, minDistance):
     
     #print("Phase used for file: " + file_name)
 
@@ -183,14 +183,14 @@ def find_using_phase(file_name, phase_data, minR, maxR):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     gray_blurred = cv2.medianBlur(gray,19)
     detected_circles = cv2.HoughCircles(gray_blurred, 
-                    cv2.HOUGH_GRADIENT, 1, 200, param1 = 70,
+                    cv2.HOUGH_GRADIENT, 1, minDistance, param1 = 70,
                 param2 = 27, minRadius = minR, maxRadius = maxR)
     
     return detected_circles
     
 
 
-def find_using_binary_filter(file_name, height_array, min_flag, maxR):
+def find_using_binary_filter(file_name, height_array, min_flag, maxR, minDistance):
     #print("Binary filter used for " + file_name)
     
     #Generate binary array    
@@ -213,7 +213,7 @@ def find_using_binary_filter(file_name, height_array, min_flag, maxR):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     gray_blurred = cv2.medianBlur(gray,135)
     detected_circles = cv2.HoughCircles(gray_blurred,
-                    cv2.HOUGH_GRADIENT, 2, 200, param1 = 70,
+                    cv2.HOUGH_GRADIENT, 2, minDistance, param1 = 70,
                 param2 = 10, minRadius = 0, maxRadius = maxR)
     
     #Needs high blurring which can make circles smaller. If user spcifies a minimum radius, set all radius to minimum radius. 

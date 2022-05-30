@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
-def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_lim, pol_right_lim, take_bottom_left = False):
+def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_lim, pol_right_lim, take_bottom_left = False, exclude=[], best_circle_index=0):
     #Note pol_left_lim, pol_right_lim are measured in um, need to convert to pixels
     pol_left_lim = pol_left_lim*256/20
     pol_right_lim = pol_right_lim*256/20
@@ -12,7 +12,8 @@ def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_l
     cu_count = 1
     pol_count=1
     
-    for pt in detected_circles[0, :]:
+    for i in [x for x in range(len(detected_circles[0, :])) if x+1 not in exclude]:
+        pt = detected_circles[0,i]
         x,y, r = int(pt[0]*256/768), int(pt[1]*256/768), int(pt[2]*256/768)
         #Square where copper Ra is calculated
         ax.add_patch(Rectangle((x-6, y-6),
@@ -47,9 +48,9 @@ def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_l
                 plt.text(x-2*r+12, y+2*r-12, pol_count, fontsize=25)
                 pol_count+=1          
     #Draw boundaries where line profile is taken 
-    best_circle_x = int(detected_circles[0][0][0]*256/768)
-    best_circle_y = int(detected_circles[0][0][1]*256/768)
-    best_circle_r = int(detected_circles[0][0][2]*256/768)
+    best_circle_x = int(detected_circles[0][best_circle_index][0]*256/768)
+    best_circle_y = int(detected_circles[0][best_circle_index][1]*256/768)
+    best_circle_r = int(detected_circles[0][best_circle_index][2]*256/768)
     
     line_profile_upper_lim = best_circle_y-best_circle_r/2
     line_profile_lower_lim = best_circle_y+best_circle_r/2
