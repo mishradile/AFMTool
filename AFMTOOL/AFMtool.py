@@ -21,10 +21,13 @@ import os
 #Implementing flags
 import argparse
 parser = argparse.ArgumentParser()
-# Specify min, max radius to detect for 
+#Specify min, max radius to detect for 
 #Return None if flag is not set
 parser.add_argument("-mr", "--minRadius",type =float, metavar='', help="Minimum radius (um) of contact points. Default: 40um")
 parser.add_argument("-Mr", "--maxRadius",type =float, metavar='', help="Maximum radius (um) of contact points. Default: 110um")
+#r,p can be specified if pitch and radius are uniform throughout the files passed in 
+parser.add_argument("-r", "--radius",type =float, metavar='', help="Specify radius (um) of all contact points. Use if all contact points in files passed in are the same.")
+parser.add_argument("-p", "--pitch",type =float, metavar='', help="Specify pitch (um). Use if pitch in all files passed in are the same.")
 parser.add_argument("-A", "--useAll", action='store_true', help='Use all detected contacted points to calculate roughness.')
 args = parser.parse_args()
 

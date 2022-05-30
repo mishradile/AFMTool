@@ -15,7 +15,7 @@ datetime_SG = datetime.now(tz_SG)
 format_timestring = datetime_SG.strftime("%m%d%Y%H%M")
 
 #Main function
-def find_circles(file_name, height_array, phase_data, min_flag, max_flag):
+def find_circles(file_name, height_array, phase_data, min_flag, max_flag, pitch_flag):
     """ 
     Returns coordinate of circles found
     """
@@ -36,6 +36,7 @@ def find_circles(file_name, height_array, phase_data, min_flag, max_flag):
     # Note minRadius and maxRadius are scaled for input into HoughCircles 
     minRadiusHough = 40 if min_flag is None else int(40*min_flag/3)
     maxRadiusHough = 110 if max_flag is None else int(110*max_flag/5)
+    minDistance =200 if pitch_flag is None else int()
     
     detected_circles = cv2.HoughCircles(gray_blurred, 
                     cv2.HOUGH_GRADIENT, 1, 200, param1 = 35,
