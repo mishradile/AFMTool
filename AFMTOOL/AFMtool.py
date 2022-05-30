@@ -17,7 +17,14 @@ from alive_progress import alive_bar
 
 
 import os
-
+import argparse
+parser = argparse.ArgumentParser()
+# Specify min, max radius to detect for 
+#Return NOne
+parser.add_argument("-mr", "--minRadius",type =float, metavar='', help="Minimum radius (um) of contact points. Default: 40um")
+parser.add_argument("-Mr", "--maxRadius",type =float, metavar='', help="Maximum radius (um) of contact points. Default: 110um")
+parser.add_argument("-A", "-useAll", action='store_true', help='Use all detected contacted points to calculate roughness.')
+args = parser.parse_args()
 
 #Dialogue box GUI to select file to analyze
 import tkinter as tk
@@ -82,8 +89,10 @@ with alive_bar(len(filename_list)) as bar:
             height_data_flattened_with_mask = height_data.corr_fit2d(mask = mask, inline=False, nx=3, ny=3).filter_scars_removal()
             height_array = height_data_flattened_with_mask.pixels
             
-            #Use only best 3 circles detected for roughness calculations
-            detected_circles = detected_circles[:, 0:3]
+            #Unless user specify useALL flag, use only best 3 circles detected for roughness calculations
+            if not args.useAll:
+                detected_circles = detected_circles[:, 0:3]
+                
             ra, pol_ra, take_bottom_left, cu_ra_list, pol_ra_list = find_ra(height_array, detected_circles)
             
             insert_ra(excel_file_path, ra, pol_ra, file_no, cu_ra_list, pol_ra_list)

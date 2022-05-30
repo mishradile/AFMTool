@@ -15,10 +15,16 @@ datetime_SG = datetime.now(tz_SG)
 format_timestring = datetime_SG.strftime("%m%d%Y%H%M")
 
 #Main function
-def find_circles(file_name, height_array, phase_data):
+def find_circles(file_name, height_array, phase_data, min_flag, max_flag):
     """ 
     Returns coordinate of circles found
     """
+    
+    #Allow user to set min, max radius to detect using flags.
+    #User likely to input the actual min, max radius, need to modify to give tolerance.  
+    minRadius = 40 if min_flag is None else min_flag*
+    maxRadius = 110 if max_flag is None else max_flag+10
+        
     # Read image.
     img = cv2.imread("images/"+file_name+"2d_plot.png", cv2.IMREAD_COLOR)
     img = ResizeWithAspectRatio(img, width =768)
