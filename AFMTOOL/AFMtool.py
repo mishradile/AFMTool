@@ -17,10 +17,12 @@ from alive_progress import alive_bar
 
 
 import os
+
+#Implementing flags
 import argparse
 parser = argparse.ArgumentParser()
 # Specify min, max radius to detect for 
-#Return NOne
+#Return None if flag is not set
 parser.add_argument("-mr", "--minRadius",type =float, metavar='', help="Minimum radius (um) of contact points. Default: 40um")
 parser.add_argument("-Mr", "--maxRadius",type =float, metavar='', help="Maximum radius (um) of contact points. Default: 110um")
 parser.add_argument("-A", "--useAll", action='store_true', help='Use all detected contacted points to calculate roughness.')
