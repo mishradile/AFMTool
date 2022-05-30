@@ -113,5 +113,8 @@ AFMTOOL/
 - 23/5/2022:
   - Added calculations for roll off
 
+- 30/5/2022:
+  - Implemented flags that can be used to customize output. 
+
 ## Notes on possible changes to measurement methods
 - Obtain step height using height histogram instead of line profile?
