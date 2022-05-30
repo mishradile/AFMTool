@@ -23,7 +23,7 @@ parser = argparse.ArgumentParser()
 #Return NOne
 parser.add_argument("-mr", "--minRadius",type =float, metavar='', help="Minimum radius (um) of contact points. Default: 40um")
 parser.add_argument("-Mr", "--maxRadius",type =float, metavar='', help="Maximum radius (um) of contact points. Default: 110um")
-parser.add_argument("-A", "-useAll", action='store_true', help='Use all detected contacted points to calculate roughness.')
+parser.add_argument("-A", "--useAll", action='store_true', help='Use all detected contacted points to calculate roughness.')
 args = parser.parse_args()
 
 #Dialogue box GUI to select file to analyze
@@ -75,7 +75,7 @@ with alive_bar(len(filename_list)) as bar:
         img_path_2d = draw_2d_plot(height_array, filename_formatted)
         
         #Identify copper contacts
-        detected_circles = find_circles(filename_formatted, height_array, phase_data)
+        detected_circles = find_circles(filename_formatted, height_array, phase_data, args.minRadius, args.maxRadius)
         
         
         
