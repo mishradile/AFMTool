@@ -12,9 +12,7 @@ def plot_line_profile(filename_formatted, array, x, y, r):
     r_index = int(r*256/768)
     #Take average within band of width r/2
     line_data = array[max(0,int(y_index-r_index/2)): min(256,int(y_index+r_index/2)), :]
-    print('here')
     line_data = np.mean(line_data, axis=0)
-    print('here1')
     avg_height = np.mean(line_data)
     
     fig_x = np.linspace(0,20,256)
@@ -35,7 +33,6 @@ def plot_line_profile(filename_formatted, array, x, y, r):
     
     left_lim_index = int(left_lim*256/20)
     right_lim_index = int(right_lim*256/20)
-    print('here3')
     avg_copper_height = np.mean(line_data[int(left_lim_index):int(right_lim_index)])
     
     dishing = True if (avg_copper_height<avg_height) else False
@@ -73,9 +70,7 @@ def plot_line_profile(filename_formatted, array, x, y, r):
     plt.savefig(img_path, bbox_inches='tight')
     
     plt.close(fig)
-    print('here5')
     avg_pol_height = np.mean(line_data[int(pol_left_lim*256/20):int(pol_right_lim*256/20)])
-    print(line_data)
     #Calculate roll off
     
     roll_off = pol_center_height - cut_off_height
