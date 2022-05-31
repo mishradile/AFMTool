@@ -17,13 +17,19 @@ from alive_progress import alive_bar
 
 
 import os
+
+#Implementing flags
 import argparse
 parser = argparse.ArgumentParser()
-# Specify min, max radius to detect for 
-#Return NOne
+#Specify min, max radius to detect for 
+#Return None if flag is not set
 parser.add_argument("-mr", "--minRadius",type =float, metavar='', help="Minimum radius (um) of contact points. Default: 40um")
 parser.add_argument("-Mr", "--maxRadius",type =float, metavar='', help="Maximum radius (um) of contact points. Default: 110um")
+#r,p can be specified if pitch and radius are uniform throughout the files passed in 
+#parser.add_argument("-r", "--radius",type =float, metavar='', help="Specify radius (um) of all contact points. Use if all contact points in files passed in are the same.")
+parser.add_argument("-p", "--pitch",type =float, metavar='', help="Specify pitch (um). Use if pitch in all files passed in are the same.")
 parser.add_argument("-A", "--useAll", action='store_true', help='Use all detected contacted points to calculate roughness.')
+parser.add_argument("-E", "--exclude", type=str, metavar='', help="Exclude selected areas from roughness and step height calculations")
 args = parser.parse_args()
 
 #Dialogue box GUI to select file to analyze
@@ -75,7 +81,7 @@ with alive_bar(len(filename_list)) as bar:
         img_path_2d = draw_2d_plot(height_array, filename_formatted)
         
         #Identify copper contacts
-        detected_circles = find_circles(filename_formatted, height_array, phase_data, args.minRadius, args.maxRadius)
+        detected_circles = find_circles(filename_formatted, height_array, phase_data, args.minRadius, args.maxRadius, args.pitch)
         
         
         
@@ -92,15 +98,19 @@ with alive_bar(len(filename_list)) as bar:
             #Unless user specify useALL flag, use only best 3 circles detected for roughness calculations
             if not args.useAll:
                 detected_circles = detected_circles[:, 0:3]
-                
-            ra, pol_ra, take_bottom_left, cu_ra_list, pol_ra_list = find_ra(height_array, detected_circles)
+            
+            #Convert string to list, if None give empty list
+            exclude_list = [] if args.exclude is None else list(map(int, args.exclude.split(',')))
+            #Find index of best cirlce not excluded
+            best_circle_index =0
+            while(best_circle_index+1 in exclude_list):
+                best_circle_index+=1
+            ra, pol_ra, take_bottom_left, cu_ra_list, pol_ra_list = find_ra(height_array, detected_circles, exclude_list)
             
             insert_ra(excel_file_path, ra, pol_ra, file_no, cu_ra_list, pol_ra_list)
-            
-            step_height, pol_left_lim, pol_right_lim, roll_off= plot_line_profile(filename_formatted, height_array, detected_circles[0, :][0][0], detected_circles[0, :][0][1],  detected_circles[0, :][0][2])
+            step_height, pol_left_lim, pol_right_lim, roll_off= plot_line_profile(filename_formatted, height_array, detected_circles[0, :][best_circle_index][0], detected_circles[0, :][best_circle_index][1],  detected_circles[0, :][best_circle_index][2])
             insert_line_profile(filename_formatted, excel_file_path, file_no, step_height, roll_off)
-            
-            draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_lim, pol_right_lim, take_bottom_left)
+            draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_lim, pol_right_lim, take_bottom_left, exclude_list, best_circle_index)
             insert_ref_image(filename_formatted, excel_file_path, file_no)
 
         #Plot 3D graph

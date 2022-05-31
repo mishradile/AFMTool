@@ -7,14 +7,12 @@ import matplotlib.pyplot as plt
 #Assumes contacts are in horizontal array
 def plot_line_profile(filename_formatted, array, x, y, r):
     #Adjusting for coordinate differences between picture and numpy array
-    
     #Convert from image scale to array index
     y_index = int(y*256/768)
     r_index = int(r*256/768)
     #Take average within band of width r/2
-    line_data = array[int(y_index-r_index/2): int(y_index+r_index/2), :]
+    line_data = array[max(0,int(y_index-r_index/2)): min(256,int(y_index+r_index/2)), :]
     line_data = np.mean(line_data, axis=0)
-    
     avg_height = np.mean(line_data)
     
     fig_x = np.linspace(0,20,256)
@@ -72,9 +70,7 @@ def plot_line_profile(filename_formatted, array, x, y, r):
     plt.savefig(img_path, bbox_inches='tight')
     
     plt.close(fig)
-    
     avg_pol_height = np.mean(line_data[int(pol_left_lim*256/20):int(pol_right_lim*256/20)])
-    
     #Calculate roll off
     
     roll_off = pol_center_height - cut_off_height

@@ -25,7 +25,7 @@ datetime_SG = datetime.now(tz_SG)
 #For saving files with timestamps 
 format_timestring = datetime_SG.strftime("%m%d%Y%H%M")
 
-def find_ra(array, detected_circles):
+def find_ra(array, detected_circles, exclude):
     """ 
     Returns average roughness of region of copper contact centered at (x,y), 
     with default side length of region = 13 pixels = 1.016 micrometer for copper,
@@ -46,7 +46,10 @@ def find_ra(array, detected_circles):
     #Using string to store as list gives some problem with formating decimals
     cu_ra_list=""
     pol_ra_list =""
-    for pt in detected_circles[0, :]:
+    #Allows users to exclude certain circles identified by inputing exclude list
+    for i in [x for x in range(len(detected_circles[0, :])) if x+1 not in exclude]:
+        
+        pt = detected_circles[0,i]
         circles_count+=1
         
         x,y, r = int(pt[0]*256/768), int(pt[1]*256/768), int(pt[2]*256/768)
@@ -81,7 +84,9 @@ def find_ra(array, detected_circles):
         copper_ra = total_ra/circles_count
 
     if(pol_area_count==0):
-        for pt in detected_circles[0, :]:
+        for i in [x for x in range(len(detected_circles[0, :])) if x+1 not in exclude]:
+        
+            pt = detected_circles[0,i]
             x,y, r = int(pt[0]*256/768), int(pt[1]*256/768), int(pt[2]*256/768)
             #Polymer roughness 
             x_pol = x-2*r

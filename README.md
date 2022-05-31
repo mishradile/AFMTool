@@ -37,7 +37,7 @@ One can add flags when running the script to customize the output. For instance,
 ```
 python3 AFMTOOL.py -A
 ```
-Below is a list of other flags that can be used. If multiple flags needs to be used concurrent, just add additional flags at the back. i.e. To use flag `-A` and `-mr` and `-Mr` concurrently, use the command
+Below is a list of other flags that can be used. If multiple flags need to be used concurrently, just add the additional flags at the back. i.e. To use flag `-A` and `-mr` and `-Mr` concurrently, use the command
 
 ```
 python3 AFMTOOL.py -A -mr 3 -Mr 6
@@ -46,6 +46,13 @@ Flags:
   - -A: Evaluate roughness over all detected circles
   - -mr: Specify minimum radius of circles to be evaluated. Should be followed by a decimal/integer. `python3 AFMTOOL.py -mr 3` specifies a minimum radius of 3um. 
   -  -Mr: Specify maximum radius of circles to be evaluated. 
+  - -p: Specify pitch (um). This will set the minimum distance between detected circles. 
+  - -E: Exclude circles from calculation. If by looking at the reference images we find a small number of contacts are identified wrongly and we want to exclude them, we can use the `-E` flag followed by the list of indexes (Displayed at the bottom left of each green square) of circles to be excluded, separated by commas and not spaces. The listed circles will then be excluded from roughness calculations and will not be chosen for generation of line profile. E.g. If we want to exclude the first, third and fourth circles, use the following command:
+
+  ```
+  python3 AFMTOOL.py -E 1,3,4 
+  ```
+  Note: The `-E` command should only be used if you're only selected one file to analyse, as it will be applied for all files selected. i.e The above code will exclude the first, third and fourth circles for all files selected. 
 
 ## Troubleshooting
 - If after typing in `python3 AFMtool.py`, the File Explorer windows does not pop up after a long time (~20s), try pressing Ctrl+C to terminate the process. If the process terminates successfully, there should be a prompt message stating so. Then type in `python3 AFMtool.py` again to restart the process. If the terminal doesn't respond to Ctrl+C also, close the terminal and restart from step 1. 
