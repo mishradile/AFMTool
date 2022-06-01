@@ -45,7 +45,8 @@ def find_circles(file_name, height_array, phase_data, min_flag, max_flag, pitch_
   
     if(check_radius_and_distance_and_number(detected_circles) == False):
         detected_circles = find_using_dif_cmap(file_name, height_array,minRadiusHough, maxRadiusHough,minDistance)
-    if(check_radius_and_distance_and_number(detected_circles) == False):
+    #Phase data may not be available for some file formats
+    if(phase_data is not None and check_radius_and_distance_and_number(detected_circles) == False):
         detected_circles = find_using_phase(file_name, phase_data,minRadiusHough, maxRadiusHough,minDistance)
     if(check_radius_and_distance_and_number(detected_circles) == False):
         detected_circles = find_using_binary_filter(file_name, height_array,min_flag, maxRadiusHough,minDistance) #Note min_flag is passed instead 
