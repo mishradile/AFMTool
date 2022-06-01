@@ -1,7 +1,7 @@
 import time
 
 
-import pySPM
+#import pySPM
 #print(pySPM.__version__)
 
 import sys
@@ -13,6 +13,7 @@ from AFMTOOL.util.line_profile.line_profile import insert_line_profile, plot_lin
 from AFMTOOL.util.ref_imgs.draw_ref_imgs import draw_ref_imgs
 from AFMTOOL.util.draw_2d_3d_imgs.draw_imgs import draw_2d_plot, draw_3d_plot
 from AFMTOOL.util.masking.masking import get_mask, create_mask_img_dir
+from AFMTOOL.util.file_reader.file_reader import Bruker
 from alive_progress import alive_bar
 
 
@@ -57,7 +58,7 @@ for dir in dir_to_clear:
 with alive_bar(len(filename_list)) as bar:
     file_no=1
     for filename in filename_list:
-        scan = pySPM.Bruker(filename)
+        scan = Bruker(filename)
         #Uncomment below to show all channels provided by AFM 
         #scan.list_channels()
         
@@ -66,9 +67,12 @@ with alive_bar(len(filename_list)) as bar:
         filename_formatted = filename.split("/")[-1][:-3].replace('.', '_').replace(' ', '_')
 
         #topo = scan.get_channel()
-        height_data = scan.get_channel("Height Sensor") 
-        phase_data = scan.get_channel("Phase") 
-
+        try:
+            height_data = scan.get_channel("Height Sensor") 
+            phase_data = scan.get_channel("Phase") 
+        except:
+            height_data = scan.get_channel("Height") 
+            phase_data = None
         #Correct data for slope
         #TODO: Check if algorithm is same as currently used
         height_data_correct_plane = height_data.corr_fit2d(inline=False, nx=2, ny=2).filter_scars_removal()
