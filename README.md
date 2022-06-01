@@ -123,5 +123,8 @@ AFMTOOL/
 - 30/5/2022:
   - Implemented flags that can be used to customize output. 
 
+- 1/6/2022:
+  - Included support for .000, .001, .00 files
+
 ## Notes on possible changes to measurement methods
 - Obtain step height using height histogram instead of line profile?
