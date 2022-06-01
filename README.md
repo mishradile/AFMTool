@@ -24,7 +24,12 @@ AFM Tool for automating data analysis for  .spm files
 
 1. Open Windows command line (press Windows logo + S to launch search window, and search `cmd`)
 2. Type into command line:  `cd %HOMEPATH%/Desktop/AFMTOOL/AFMTOOL` and press Enter
-3. Type into command line: `python3 AFMtool.py` and press Enter. (Shortcut: enter `python3 a` then press Tab for autofill)
+3. Type into command line: `python3 AFMtool.py` and press Enter. (Shortcut: enter `python3 a` then press Tab for autofill) If error pops up: 
+```
+'python3' is not recognized as an internal or external command,
+operable program or batch file.
+```
+Try the following command instead: `python3 AFMtool.py`. 
 4. File Explorer window pops up. Drag and select files to be analyzed, and click `Open`. 
 5. Scripts starts to process files. You can see in the progress bar in the terminal line how many files it has processed. Time needed is approximately 10s per file. 
 6. If you want to terminate the process halfway, press CTRL+C. 
