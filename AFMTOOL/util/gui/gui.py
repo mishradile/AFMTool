@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-
+import os
 
 def launch_gui():
     show_all = False
@@ -70,4 +70,29 @@ def launch_gui():
     return filename_list, show_all,pitch, minr, maxr, exclude
 
 #launch_gui()
+
+
+
+def done_gui(excel_file_path):
+    layout = [
+        [sg.Text('Processing completed successfully, Excel file has been generated.')],
+        [sg.Button('Open Excel file'), sg.Button('Open file location'),sg.Push(), sg.Button('Close')]
+    ]
+    
+    window = sg.Window('Completed!', layout)
+    
+    while True:  # Event Loop
+        event, values = window.read()
+        if event in (sg.WIN_CLOSED, 'Exit'):
+            break
+        elif event == 'Close':
+            break
+        elif event == 'Open Excel file':
+            os.system("start EXCEL.EXE "+excel_file_path)
+        elif event == 'Open file location':
+            os.startfile(os.path.abspath(os.path.join(os.getcwd(), os.pardir, "results/", "xlSheets/")) )
+        
+    window.close()
+    
+    
         

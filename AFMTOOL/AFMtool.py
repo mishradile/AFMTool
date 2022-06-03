@@ -11,7 +11,7 @@ from AFMTOOL.util.ref_imgs.draw_ref_imgs import draw_ref_imgs
 from AFMTOOL.util.draw_2d_3d_imgs.draw_imgs import draw_2d_plot, draw_3d_plot
 from AFMTOOL.util.masking.masking import get_mask, create_mask_img_dir
 from AFMTOOL.util.file_reader.file_reader import Bruker
-from AFMTOOL.util.gui.gui import launch_gui
+from AFMTOOL.util.gui.gui import launch_gui, done_gui
 from alive_progress import alive_bar
 
 
@@ -106,17 +106,17 @@ for filename in filename_list:
 
 
 style_excel_final(excel_file_path)
-
-
-
-
-
-
-
-
-
-
 print("[Code executed in %s seconds]" % (time.time() - start_time))
+
+
+done_gui(excel_file_path)
+
+
+
+
+
+
+
 
 
 
