@@ -1,9 +1,5 @@
 import time
 
-
-#import pySPM
-#print(pySPM.__version__)
-
 import sys
 import PySimpleGUI as sg
 sys.path.append("../")
@@ -21,23 +17,8 @@ from alive_progress import alive_bar
 
 import os
 
-#Implementing flags
-import argparse
-parser = argparse.ArgumentParser()
-#Specify min, max radius to detect for 
-#Return None if flag is not set
-#parser.add_argument("-mr", "--minRadius",type =float, metavar='', help="Minimum radius (um) of contact points. Default: 40um")
-#parser.add_argument("-Mr", "--maxRadius",type =float, metavar='', help="Maximum radius (um) of contact points. Default: 110um")
-#r,p can be specified if pitch and radius are uniform throughout the files passed in 
-#parser.add_argument("-r", "--radius",type =float, metavar='', help="Specify radius (um) of all contact points. Use if all contact points in files passed in are the same.")
-parser.add_argument("-p", "--pitch",type =float, metavar='', help="Specify pitch (um). Use if pitch in all files passed in are the same.")
-#parser.add_argument("-A", "--useAll", action='store_true', help='Use all detected contacted points to calculate roughness.')
-parser.add_argument("-E", "--exclude", type=str, metavar='', help="Exclude selected areas from roughness and step height calculations")
-args = parser.parse_args()
-
-
-filename_list, show_all, minRadius, maxRadius = launch_gui()
-
+#Launch GUI 
+filename_list, show_all, pitch, minRadius, maxRadius, exclude = launch_gui()
 
 start_time = time.time()
 
@@ -83,7 +64,7 @@ for filename in filename_list:
     img_path_2d = draw_2d_plot(height_array, filename_formatted)
     
     #Identify copper contacts
-    detected_circles = find_circles(filename_formatted, height_array, phase_data, minRadius, maxRadius, args.pitch)
+    detected_circles = find_circles(filename_formatted, height_array, phase_data, minRadius, maxRadius, pitch)
     
     
     
@@ -102,7 +83,7 @@ for filename in filename_list:
             detected_circles = detected_circles[:, 0:3]
         
         #Convert string to list, if None give empty list
-        exclude_list = [] if args.exclude is None else list(map(int, args.exclude.split(',')))
+        exclude_list = [] if exclude is None else list(map(int, exclude.split(',')))
         #Find index of best cirlce not excluded
         best_circle_index =0
         while(best_circle_index+1 in exclude_list):
