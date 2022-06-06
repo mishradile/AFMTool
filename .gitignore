@@ -7,7 +7,6 @@ afmdata/**
 data/*
 data/**
 *.spm
-**/images/
 **.xlsx
 **/__pycache__/
 **.png
