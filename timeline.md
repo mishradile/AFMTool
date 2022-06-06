@@ -52,4 +52,4 @@
   - Developed GUI using PySimpleGUI
  
 - 6/6/2022:
-  - Allowed users to customize windows size
+  - Allowed users to customize square size used to take roughness measurements
