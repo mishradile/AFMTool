@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #Assumes contacts are in horizontal array
-def plot_line_profile(filename_formatted, array, vert_line, x, y, r):
+def plot_line_profile(filename_formatted, array, vert_line, cu_sh_width, x, y, r):
     #Adjusting for coordinate differences between picture and numpy array
     #Convert from image scale to array index
     x_index = int(x*256/768)
@@ -42,8 +42,8 @@ def plot_line_profile(filename_formatted, array, vert_line, x, y, r):
         #TODO: Change naming
         x_um = y*20/768
     #Take range slightly smaller than r to be safe
-    left_lim = x_um-r_um*0.8
-    right_lim = x_um+r_um*0.8
+    left_lim = x_um-r_um*cu_sh_width
+    right_lim = x_um+r_um*cu_sh_width
     ax.plot((left_lim, left_lim), (min(line_data), 0.1+max(line_data)), color='black', linestyle='-.')
     ax.plot((right_lim, right_lim), (min(line_data), 0.1+max(line_data)), color='black', linestyle='-.')
     

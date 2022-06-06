@@ -24,6 +24,7 @@ def launch_gui():
         [sg.Text('Min radius (μm):'), sg.Input(key='-MINR-', size = 6), sg.Push(), sg.Text('Max radius (μm):'), sg.Input(key='-MAXR-', size = 6), sg.Push()],
         [sg.Text('Index of circles to exclude: '),sg.Input(key='-EXCLUDE-', size = 10), sg.Push(), sg.Text('Pitch (μm):'), sg.Input(key='-PITCH-', size = 6), sg.Push(),],
         [sg.Text('Contacts window side length: (μm):'), sg.Input(key='-CWINSIZE-', size = 6), sg.Push(), sg.Text('Polymer window side length (μm):'), sg.Input(key='-POLWINSIZE-', size = 6), sg.Push()],
+        [sg.Text('Copper height window width (%):'), sg.Input(key='-SHCOPPER-', size = 6) ],
         [sg.Button('Help')]
         
     ]
@@ -59,6 +60,8 @@ def launch_gui():
                      "Define the side lengths of the squares within which the roughness of the contacts and polymers respectively are calculated. Default side lengths for square used for copper contacts is 1μm and that for polymer contacts is 2μm. The square on the copper contact will always be centered on the center of the circle detected, and the center of the square of the corresponding polymer will be one diameter to the right and one diameter upwards, unless all such squares are out of bound, in which case the polymer squares will be one diameter down and to the left of the copper squares.",
                      "Vertical line profile:",
                      "Calculate line profile, step height, and roll off along vertical lines.",
+                     "Copper height window width (%):",
+                     "Define the width of the window used to calculate the average height of copper contacts, as a percentage of the radius of the circular contacts.",
                      keep_on_top=True)
         elif event == '-TOGGLE-GRAPHIC-':  # if the graphical button that changes images
             window['-TOGGLE-GRAPHIC-'].metadata = not window['-TOGGLE-GRAPHIC-'].metadata
@@ -81,8 +84,9 @@ def launch_gui():
     exclude = None if values['-EXCLUDE-']=='' else values['-EXCLUDE-']
     cwinsize = 1 if values['-CWINSIZE-']=='' else float(values['-CWINSIZE-'])
     polwinsize = 2 if values['-POLWINSIZE-']=='' else float(values['-POLWINSIZE-'])
+    shcopper = 0.8 if values['-SHCOPPER-']=='' else float(values['-SHCOPPER-'])/100
         
-    return filename_list, show_all,pitch, minr, maxr, exclude, cwinsize, polwinsize, vert_line 
+    return filename_list, show_all,pitch, minr, maxr, exclude, cwinsize, polwinsize, vert_line, shcopper
 
 #launch_gui()
 

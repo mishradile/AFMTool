@@ -18,7 +18,7 @@ from alive_progress import alive_bar
 import os
 
 #Launch GUI, and get any optional inputs given
-filename_list, show_all, pitch, minRadius, maxRadius, exclude, cwinsize, polwinsize, vert_line = launch_gui()
+filename_list, show_all, pitch, minRadius, maxRadius, exclude, cwinsize, polwinsize, vert_line, cu_sh_width = launch_gui()
 
 start_time = time.time()
 
@@ -91,9 +91,9 @@ for filename in filename_list:
         ra, pol_ra, take_bottom_left, cu_ra_list, pol_ra_list = find_ra(height_array, detected_circles, exclude_list, cwinsize, polwinsize)
         
         insert_ra(excel_file_path, ra, pol_ra, file_no, cu_ra_list, pol_ra_list)
-        step_height, pol_left_lim, pol_right_lim, roll_off= plot_line_profile(filename_formatted, height_array, vert_line, detected_circles[0, :][best_circle_index][0], detected_circles[0, :][best_circle_index][1],  detected_circles[0, :][best_circle_index][2])
+        step_height, pol_left_lim, pol_right_lim, roll_off= plot_line_profile(filename_formatted, height_array, vert_line, cu_sh_width, detected_circles[0, :][best_circle_index][0], detected_circles[0, :][best_circle_index][1],  detected_circles[0, :][best_circle_index][2])
         insert_line_profile(filename_formatted, excel_file_path, file_no, step_height, roll_off)
-        draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_lim, pol_right_lim, take_bottom_left, exclude_list, best_circle_index, cwinsize, polwinsize, vert_line)
+        draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_lim, pol_right_lim, take_bottom_left, exclude_list, best_circle_index, cwinsize, polwinsize, vert_line,cu_sh_width )
         insert_ref_image(filename_formatted, excel_file_path, file_no)
 
     #Plot 3D graph
