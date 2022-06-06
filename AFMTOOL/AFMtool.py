@@ -18,7 +18,7 @@ from alive_progress import alive_bar
 import os
 
 #Launch GUI, and get any optional inputs given
-filename_list, show_all, pitch, minRadius, maxRadius, exclude, cwinsize, polwinsize = launch_gui()
+filename_list, show_all, pitch, minRadius, maxRadius, exclude, cwinsize, polwinsize, vert_line = launch_gui()
 
 start_time = time.time()
 
@@ -88,7 +88,7 @@ for filename in filename_list:
         best_circle_index =0
         while(best_circle_index+1 in exclude_list):
             best_circle_index+=1
-        ra, pol_ra, take_bottom_left, cu_ra_list, pol_ra_list, vert_line = find_ra(height_array, detected_circles, exclude_list, cwinsize, polwinsize)
+        ra, pol_ra, take_bottom_left, cu_ra_list, pol_ra_list = find_ra(height_array, detected_circles, exclude_list, cwinsize, polwinsize)
         
         insert_ra(excel_file_path, ra, pol_ra, file_no, cu_ra_list, pol_ra_list)
         step_height, pol_left_lim, pol_right_lim, roll_off= plot_line_profile(filename_formatted, height_array, detected_circles[0, :][best_circle_index][0], detected_circles[0, :][best_circle_index][1],  detected_circles[0, :][best_circle_index][2])
