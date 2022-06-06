@@ -49,6 +49,8 @@ def launch_gui():
                      "Define the minimum distance between center of contacts",
                      "Min and Max radius: ",
                      "Define the smallest and largest radius of the circular contacts in the files uploaded, respectively.",
+                     "Index of circles to exclude: ",
+                     "In the reference image generated in the Excel report, the green boxes inside the circles detected are numbered. If certain circles are not detected correctly, one can exclude them by specifying them in the input box with the indexes separated by commas and no spaces. For instance, if the 1st and 3rd circles are to be excluded, type in '1,3'.",
                      
                      keep_on_top=True)
         elif event == '-TOGGLE-GRAPHIC-':  # if the graphical button that changes images
