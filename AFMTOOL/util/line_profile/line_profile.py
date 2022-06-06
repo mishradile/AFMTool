@@ -5,14 +5,26 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #Assumes contacts are in horizontal array
-def plot_line_profile(filename_formatted, array, x, y, r):
+def plot_line_profile(filename_formatted, array, vert_line, x, y, r):
     #Adjusting for coordinate differences between picture and numpy array
     #Convert from image scale to array index
+    x_index = int(x*256/768)
     y_index = int(y*256/768)
     r_index = int(r*256/768)
     #Take average within band of width r/2
-    line_data = array[max(0,int(y_index-r_index/2)): min(256,int(y_index+r_index/2)), :]
-    line_data = np.mean(line_data, axis=0)
+    if not vert_line:
+        #Taking horizontal band
+        # Uncomment to show band used
+        # array[max(0,int(y_index-r_index/2)): min(256,int(y_index+r_index/2)), :]=0
+        # plt.imshow(array, cmap="copper")
+        # plt.show()
+        line_data = array[max(0,int(y_index-r_index/2)): min(256,int(y_index+r_index/2)), :]
+        line_data = np.mean(line_data, axis=0)
+    else:
+        #Vertical band
+        line_data = array[:, max(0,int(x_index-r_index/2)): min(256,int(x_index+r_index/2))]
+        line_data = np.mean(line_data, axis=1).flatten()
+        
     avg_height = np.mean(line_data)
     
     fig_x = np.linspace(0,20,256)
@@ -24,7 +36,11 @@ def plot_line_profile(filename_formatted, array, x, y, r):
     
     #Plot vertical lines denoting copper contact
     r_um = r*20/768 #Get radius in um
-    x_um = x*20/768
+    if not vert_line:
+        x_um = x*20/768
+    else:
+        #TODO: Change naming
+        x_um = y*20/768
     #Take range slightly smaller than r to be safe
     left_lim = x_um-r_um*0.8
     right_lim = x_um+r_um*0.8
