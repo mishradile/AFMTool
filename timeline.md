@@ -53,3 +53,4 @@
  
 - 6/6/2022:
   - Allowed users to customize square size used to take roughness measurements
+  - Allowed users to take line profiles vertically
