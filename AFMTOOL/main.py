@@ -102,7 +102,7 @@ for filename in filename_list:
     insert_xl(excel_file_path, img_path_2d, img_path_3d,file_no)
     
     file_no+=1  
-    sg.one_line_progress_meter('My Meter', file_no-1, len(filename_list), 'key','Optional message')
+    sg.one_line_progress_meter('My Meter', file_no-1, len(filename_list),'No. of files processed', orientation = 'h')
 
 
 style_excel_final(excel_file_path)
