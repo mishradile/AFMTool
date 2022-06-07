@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
-def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_lim, pol_right_lim, take_bottom_left = False, exclude=[], best_circle_index=0, cwinsize=1, polwinsize=2, vert_line=False):
+def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_lim, pol_right_lim, take_bottom_left = False, exclude=[], best_circle_index=0, cwinsize=1, polwinsize=2, vert_line=False, cu_sh_width=0.8):
     #Note pol_left_lim, pol_right_lim are measured in um, need to convert to pixels
     pol_left_lim = pol_left_lim*256/20
     pol_right_lim = pol_right_lim*256/20
@@ -57,21 +57,20 @@ def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_l
     if not vert_line: 
         line_profile_upper_lim = best_circle_y-best_circle_r/2
         line_profile_lower_lim = best_circle_y+best_circle_r/2
-    
-        #Two horizontal lines denoting line profile data 
+     
+        #Two boxes denoting areas where step height is calculated from
         ax.add_patch(Rectangle((pol_left_lim, line_profile_upper_lim),
                             pol_right_lim-pol_left_lim, best_circle_r,
                             fc ='none', 
                             ec ='b',
                             lw = 3) )
-        ax.add_patch(Rectangle((best_circle_x-0.8*best_circle_r, line_profile_upper_lim),
-                            1.6*best_circle_r, best_circle_r,
+        ax.add_patch(Rectangle((best_circle_x-cu_sh_width*best_circle_r, line_profile_upper_lim),
+                            2*cu_sh_width*best_circle_r, best_circle_r,
                             fc ='none', 
                             ec ='b',
                             lw = 3) )
         
-        #Two boxes denoting areas where step height is calculated from
-        
+        #Two horizontal lines denoting line profile data 
         ax.add_patch(Rectangle((0, line_profile_lower_lim),
                             256, 0,
                             fc ='none', 
@@ -97,8 +96,8 @@ def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_l
                             ec ='b',
                             lw = 3) )
         #Copper box
-        ax.add_patch(Rectangle((line_profile_left_lim, best_circle_y-0.8*best_circle_r),
-                            best_circle_r,1.6*best_circle_r, 
+        ax.add_patch(Rectangle((line_profile_left_lim, best_circle_y-cu_sh_width*best_circle_r),
+                            best_circle_r,2*cu_sh_width*best_circle_r, 
                             fc ='none', 
                             ec ='b',
                             lw = 3) )
