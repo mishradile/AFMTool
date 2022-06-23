@@ -1,1 +1,0 @@
-Blank file to prevent Git from ignoring results folder
