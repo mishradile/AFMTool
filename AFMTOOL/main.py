@@ -22,9 +22,10 @@ filename_list, show_all, pitch, minRadius, maxRadius, exclude, cwinsize, polwins
 start_time = time.time()
 
 #Directory to store generated Excel reports
+gen_dir()
 excel_file_path = create_xl_template()
 mask_file_path = create_mask_img_dir()
-gen_dir()
+
 
 #Clear data that no need to be stored/will be stored in Excel sheet
 dir_to_clear = ['../AFMTOOL/images/', '../AFMTOOL/line_profile_imgs/', '../results/ref_regions_imgs/', '../AFMTOOL/misc/temp_images/binary_filter/', '../AFMTOOL/misc/temp_images/diff_cmap/', '../AFMTOOL/misc/temp_images/phase/']
