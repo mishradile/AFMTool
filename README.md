@@ -61,8 +61,11 @@ Options:
 - `.spm`, `.001`, `.000`, `.00`
 
 ## Troubleshooting
-- If after typing in `python3 AFMtool.py`, the File Explorer windows does not pop up after a long time (~20s), try pressing Ctrl+C to terminate the process. If the process terminates successfully, there should be a prompt message stating so. Then type in `python3 AFMtool.py` again to restart the process. If the terminal doesn't respond to Ctrl+C also, close the terminal and restart from step 1. 
-
+- If after entering `python3 AFMtool.py`, the File Explorer windows does not pop up after a long time (~20s), try pressing Ctrl+C to terminate the process. If the process terminates successfully, there should be a prompt message stating so. Then type in `python3 AFMtool.py` again to restart the process. If the terminal doesn't respond to Ctrl+C also, close the terminal and restart from step 1. 
+- If after entering `pip install -r requirements.txt` there's an error message `'pip' is not recognized as an internal or external command`, try the following:
+  - Download Python again (or clicking the existing installation exe file which has been used to download Python and then clicking “Customize installation”), and checking that the “pip” checkbox is ticked to set the path for pip.
+![pythoninstall](https://user-images.githubusercontent.com/105037297/175252187-2681279f-16b6-4e63-a583-1d06caa34270.PNG)
+  - If the above doesn't work, you can set the PATH element from Window's cmd line: enter `setx PATH "%PATH%;C:\Python34\Scripts”`. After hitting enter, close the current terminal. Open a new terminal and try running `pip install -r requirements.txt` again. 
 ## Assumptions made of AFM raw data formats
 - x,y axis have range 20um (Hardcoded to eliminate user's need of entering range. If need to change, open root AFMTOOL folder in VSCode or other text editors and search '20' to see the places being hardcoded.)
 - Diameter:Pitch ratio is at least 1:2 (Used in choosing area to calculate polymer roughness. If need to change, go to util/roughness/roughness.py and change the section on getting polymer roughness.)
