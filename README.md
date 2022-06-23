@@ -17,12 +17,12 @@ Automated roughness and step height analysis of atomic force mircroscope (AFM) m
     - If Python has been installed, the version that is in your computer will be returned. 
 ![Check python ver](https://user-images.githubusercontent.com/105037297/169487975-c7da6c6f-da46-44d2-bda3-5d8dd35987d7.PNG)
     - If an error message is returned, Python has not been installed. You can download it here: https://www.python.org/downloads/
-- If Python has been installed in your computer, you need to proceed to install the required Python libraries that is needed to run the script. In the command line, type `cd %HOMEPATH%/Desktop/AFMTOOL` and press Enter. After that, type `pip install -r requirements.txt` and wait for installation to be completed.
+- If Python has been installed in your computer, you need to proceed to install the required Python libraries that is needed to run the script. In the command line, type `cd %HOMEPATH%/Desktop/AFMTOOL-main/AFMTOOL` and press Enter. After that, type `pip install -r requirements.txt` and wait for installation to be completed.
 - If no error messages appeared on the terminal, you have successfully installed the packages needed to run the script, please refer to Usage section below on how to run the script. 
 
 ## Usage
 
-1. Open the main `AFMTOOL` folder, and click into the `AFMTOOL` folder inside.
+1. Open the main `AFMTOOL-main` folder, and click into the `AFMTOOL` folder inside.
 2. Double click the `AFMTool.vbs` file. 
 3. User interface pops up. Click the `Browse` button. 
 
