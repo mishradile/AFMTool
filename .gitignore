@@ -11,5 +11,4 @@ data/**
 **/__pycache__/
 **.png
 **.pyc
-**/ref_regions_imgs/**
 **/binary_filtered_imgs/**
