@@ -12,9 +12,8 @@ from AFMTOOL.util.draw_2d_3d_imgs.draw_imgs import draw_2d_plot, draw_3d_plot
 from AFMTOOL.util.masking.masking import get_mask, create_mask_img_dir
 from AFMTOOL.util.file_reader.file_reader import Bruker
 from AFMTOOL.util.gui.gui import launch_gui, done_gui
+from AFMTOOL.util.makedirs import gen_dir
 from alive_progress import alive_bar
-
-
 import os
 
 #Launch GUI, and get any optional inputs given
@@ -25,6 +24,7 @@ start_time = time.time()
 #Directory to store generated Excel reports
 excel_file_path = create_xl_template()
 mask_file_path = create_mask_img_dir()
+gen_dir()
 
 #Clear data that no need to be stored/will be stored in Excel sheet
 dir_to_clear = ['../AFMTOOL/images/', '../AFMTOOL/line_profile_imgs/', '../results/ref_regions_imgs/', '../AFMTOOL/misc/temp_images/binary_filter/', '../AFMTOOL/misc/temp_images/diff_cmap/', '../AFMTOOL/misc/temp_images/phase/']

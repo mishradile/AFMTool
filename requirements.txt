@@ -6,3 +6,4 @@ pySPM==0.2.23
 pytz==2020.1
 opencv-python==4.5.5.64
 PySimpleGUI==4.60.1
+tqdm==4.64.0
