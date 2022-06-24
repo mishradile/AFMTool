@@ -102,15 +102,18 @@ for filename in filename_list:
     
     insert_xl(excel_file_path, img_path_2d, img_path_3d,file_no)
     
-    file_no+=1  
-    sg.one_line_progress_meter('My Meter', file_no-1, len(filename_list),'No. of files processed', orientation = 'h')
+    file_no+=1 
+    completed=True 
+    if not sg.one_line_progress_meter('My Meter', file_no-1, len(filename_list),'No. of files processed', orientation = 'h'):
+        completed=False
+        break
 
 
 style_excel_final(excel_file_path)
 print("[Code executed in %s seconds]" % (time.time() - start_time))
 
 
-done_gui(excel_file_path)
+done_gui(excel_file_path, completed)
 
 
 

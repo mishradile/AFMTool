@@ -92,13 +92,15 @@ def launch_gui():
 
 
 
-def done_gui(excel_file_path):
+def done_gui(excel_file_path, done=True):
+    title = 'Completed!' if done else 'Cancelled'
+    msg = 'Processing completed successfully, Excel file has been generated.' if done else 'Process cancelled, Excel file has been generated for some data.'
     layout = [
-        [sg.Text('Processing completed successfully, Excel file has been generated.')],
+        [sg.Text(msg)],
         [sg.Button('Open Excel file'), sg.Button('Open file location'),sg.Push(), sg.Button('Close')]
     ]
     
-    window = sg.Window('Completed!', layout)
+    window = sg.Window(title, layout)
     
     while True:  # Event Loop
         event, values = window.read()
