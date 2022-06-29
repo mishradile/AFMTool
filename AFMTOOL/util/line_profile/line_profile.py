@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 
 #Assumes contacts are in horizontal array
 def plot_line_profile(filename_formatted, array, vert_line, cu_sh_width, x, y, r):
+    
+    avg_height = np.mean(array)
+    
     #Adjusting for coordinate differences between picture and numpy array
     #Convert from image scale to array index
     x_index = int(x*256/768)
@@ -25,7 +28,7 @@ def plot_line_profile(filename_formatted, array, vert_line, cu_sh_width, x, y, r
         line_data = array[:, max(0,int(x_index-r_index/2)): min(256,int(x_index+r_index/2))]
         line_data = np.mean(line_data, axis=1).flatten()
         
-    avg_height = np.mean(line_data)
+    
     
     fig_x = np.linspace(0,20,256)
     fig = plt.figure(figsize=(18,12))
@@ -46,13 +49,16 @@ def plot_line_profile(filename_formatted, array, vert_line, cu_sh_width, x, y, r
     right_lim = x_um+r_um*cu_sh_width
     ax.plot((left_lim, left_lim), (min(line_data), 0.1+max(line_data)), color='black', linestyle='-.')
     ax.plot((right_lim, right_lim), (min(line_data), 0.1+max(line_data)), color='black', linestyle='-.')
+    #Uncomment to see avg_height
+    #ax.plot((0,19), (avg_height, avg_height), color='black', linestyle='-.')
+    #avg_line = np.mean(line_data)
+    #ax.plot((0,19), (avg_line, avg_line), color='red', linestyle='-.')
     
     left_lim_index = int(left_lim*256/20)
     right_lim_index = int(right_lim*256/20)
     avg_copper_height = np.mean(line_data[int(left_lim_index):int(right_lim_index)])
     
     dishing = True if (avg_copper_height<avg_height) else False
-    
     
     #Plot vertical lines denoting polymer
     #Note that polymer limits are shifted inwards (towards each other) by 0.2*r from the 
@@ -64,7 +70,7 @@ def plot_line_profile(filename_formatted, array, vert_line, cu_sh_width, x, y, r
         #Note that find_pol_limit gives index, need to convert to um
         
         #Used for calculation of roll off
-        cut_off_limit = find_pol_limit(line_data, int((pol_right_lim)*256/20), avg_height, dishing, False)
+        cut_off_limit = find_pol_limit(line_data, int((pol_right_lim)*256/20), avg_height, avg_copper_height, dishing, False, int(r_um*256/20))
         cut_off_height = line_data[cut_off_limit]
         ax.plot(((20/256)*cut_off_limit, (20/256)*cut_off_limit), (min(line_data), 0.1+max(line_data)), color='green', linestyle='--')
         pol_left_lim = (20/256)*cut_off_limit+0.2*r_um
@@ -72,7 +78,7 @@ def plot_line_profile(filename_formatted, array, vert_line, cu_sh_width, x, y, r
     else:
         pol_left_lim = x_um+r_um*1.2
         ax.plot((pol_left_lim, pol_left_lim), (min(line_data), 0.1+max(line_data)), color='red', linestyle='-.')
-        cut_off_limit = find_pol_limit(line_data, int((pol_left_lim)*256/20), avg_height, dishing, True)
+        cut_off_limit = find_pol_limit(line_data, int((pol_left_lim)*256/20), avg_height, avg_copper_height, dishing, True, int(r_um*256/20))
         cut_off_height = line_data[cut_off_limit]
         ax.plot(((20/256)*cut_off_limit, (20/256)*cut_off_limit), (min(line_data), 0.1+max(line_data)), color='green', linestyle='--')
         pol_right_lim = (20/256)*cut_off_limit-0.2*r_um
@@ -90,9 +96,13 @@ def plot_line_profile(filename_formatted, array, vert_line, cu_sh_width, x, y, r
     #Calculate roll off
     
     roll_off = pol_center_height - cut_off_height
-    return avg_copper_height -avg_pol_height, pol_left_lim, pol_right_lim, roll_off
+    step_height = avg_copper_height-avg_pol_height
+    return step_height, pol_left_lim, pol_right_lim, roll_off
     
 def insert_line_profile(filename_formatted, excel_file_path, col_num, step_height, roll_off):
+    
+    step_height = "Error: could not obtain step height" if step_height is None else step_height
+    roll_off = "Error: could not obtain roll_off" if roll_off is None else roll_off
     
     img_path  = "../AFMTOOL/line_profile_imgs/"+str(filename_formatted)+"line_plot.png"
     wb = openpyxl.load_workbook(excel_file_path)
@@ -114,23 +124,30 @@ def insert_line_profile(filename_formatted, excel_file_path, col_num, step_heigh
     wb.save(excel_file_path)
     
 
-def find_pol_limit(array, first_limit, avg_height, dishing, search_right):
-    
+def find_pol_limit(array, first_limit, avg_height, avg_copper_height, dishing, search_right, r_pixel):
+
     index = first_limit
 
     if(dishing):
         if(search_right):
-            while(index<=256 and not all(i<avg_height for i in array[index:index+5])):
+            #+15 so starting finding closer to the center of polymer, to avoid roll off regions
+            #Move left/right until closer to average copper height than average height
+            #Index will stop at the border in the circle
+            index +=r_pixel
+            while(index<255 and not all(abs(i-avg_copper_height)<abs(i-avg_height) for i in array[index:index+5])):
                 index+=1
         else:
-            while(index>=0 and not all(i<avg_height for i in array[index-5:index])):
+            index-=r_pixel
+            while(index>=0 and not all(abs(i-avg_copper_height)<abs(i-avg_height) for i in array[index-5:index])):
                 index-=1
     else:
         if(search_right):
-            while(index<=256 and not all(i>avg_height for i in array[index:index+5])):
+            index+=r_pixel
+            while(index<255 and not all(abs(i-avg_copper_height)<abs(i-avg_height) for i in array[index:index+5])):
                 index+=1
         else:
-            while(index>=0 and not all(i>avg_height for i in array[index-5:index])):
+            index-=r_pixel
+            while(index>=0 and not all(abs(i-avg_copper_height)<abs(i-avg_height) for i in array[index-5:index])):
                 index-=1
     
     return index
