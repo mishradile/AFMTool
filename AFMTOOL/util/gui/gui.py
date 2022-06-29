@@ -13,19 +13,37 @@ def launch_gui():
             [sg.Text('Files selected:'), sg.Input(readonly = True, key = '-FILES-'), sg.FilesBrowse()],
             [sg.Submit(key='-SUBMIT-')]
     ]
-    options_layout = [
+    options_general_layout = [
         [sg.Text('Detect all circles:'),
         sg.Button(image_data=toggle_btn_off, key='-TOGGLE-GRAPHIC-', button_color=(sg.theme_background_color(), sg.theme_background_color()), border_width=0, metadata=False),
         sg.Push(),
-        sg.Text('Vertical line profile:'),
-        sg.Button(image_data=toggle_btn_off, key='-VERTLINE-', button_color=(sg.theme_background_color(), sg.theme_background_color()), border_width=0, metadata=False),
-        sg.Push(),
+        sg.Text('Index of circles to exclude: '),sg.Input(key='-EXCLUDE-', size = 10), sg.Push()
         ],
-        [sg.Text('Min radius (μm):'), sg.Input(key='-MINR-', size = 6), sg.Push(), sg.Text('Max radius (μm):'), sg.Input(key='-MAXR-', size = 6), sg.Push()],
-        [sg.Text('Index of circles to exclude: '),sg.Input(key='-EXCLUDE-', size = 10), sg.Push(), sg.Text('Pitch (μm):'), sg.Input(key='-PITCH-', size = 6), sg.Push(),],
+        [sg.Text('Min radius (μm):'), sg.Input(key='-MINR-', size = 6), sg.Push(), 
+         sg.Text('Max radius (μm):'), sg.Input(key='-MAXR-', size = 6), sg.Push(),
+         sg.Text('Pitch (μm):'), sg.Input(key='-PITCH-', size = 6), sg.Push(),
+         ],
+    ]
+    
+    options_roughness_layout = [
         [sg.Text('Contacts window side length: (μm):'), sg.Input(key='-CWINSIZE-', size = 6), sg.Push(), sg.Text('Polymer window side length (μm):'), sg.Input(key='-POLWINSIZE-', size = 6), sg.Push()],
-        [sg.Text('Copper height window width (%):'), sg.Input(key='-SHCOPPER-', size = 6) ],
-        [sg.Button('Help')]
+    ]
+    
+    options_line_layout = [
+        [sg.Text('Vertical line profile:'),
+        sg.Button(image_data=toggle_btn_off, key='-VERTLINE-', button_color=(sg.theme_background_color(), sg.theme_background_color()), border_width=0, metadata=False),
+        sg.Push(),sg.Text('Copper window width (% of radius):'), sg.Input(key='-SHCOPPER-', size = 6)],
+    ]
+    
+    options_layout = [
+        
+        [sg.TabGroup([[  sg.Tab('General', options_general_layout),
+                               sg.Tab('Roughness', options_roughness_layout),
+                               sg.Tab('Line profile', options_line_layout),
+                ]], key='-TAB GROUP OPTIONS-'),
+               ],
+        
+        [sg.Button('Help')],
         
     ]
     
@@ -60,8 +78,8 @@ def launch_gui():
                      "Define the side lengths of the squares within which the roughness of the contacts and polymers respectively are calculated. Default side lengths for square used for copper contacts is 1μm and that for polymer contacts is 2μm. The square on the copper contact will always be centered on the center of the circle detected, and the center of the square of the corresponding polymer will be one diameter to the right and one diameter upwards, unless all such squares are out of bound, in which case the polymer squares will be one diameter down and to the left of the copper squares.",
                      "Vertical line profile:",
                      "Calculate line profile, step height, and roll off along vertical lines.",
-                     "Copper height window width (%):",
-                     "Define the width of the window used to calculate the average height of copper contacts, as a percentage of the radius of the circular contacts.",
+                     "Copper window width (% of radius):",
+                     "Define the width of the window used to calculate the average height of copper contacts (blue rectangle in reference image), as a percentage of the radius of the circular contacts.",
                      keep_on_top=True)
         elif event == '-TOGGLE-GRAPHIC-':  # if the graphical button that changes images
             window['-TOGGLE-GRAPHIC-'].metadata = not window['-TOGGLE-GRAPHIC-'].metadata
