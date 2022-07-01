@@ -57,7 +57,7 @@ Options:
   - Exclude: Exclude circles from calculation. If by looking at the reference images we find a small number of contacts are identified wrongly and we want to exclude them, we can use the `-E` flag followed by the list of indexes (Displayed at the bottom left of each green square) of circles to be excluded, separated by commas and not spaces. The listed circles will then be excluded from roughness calculations and will not be chosen for generation of line profile. E.g. If we want to exclude the first, third and fourth circles, type `1,3,4` into the input box. 
   Note: The `exclude` option should only be used if you're only selected one file to analyse, as it will be applied for all files selected. i.e The above code will exclude the first, third and fourth circles for all files selected. 
   
-### Curently upported file formats
+### Curently supported file formats
 - `.spm`, `.001`, `.000`, `.00`
 
 ## Troubleshooting
@@ -69,7 +69,7 @@ Options:
 ## Assumptions made of AFM raw data formats
 - x,y axis have range 20um (Hardcoded to eliminate user's need of entering range. If need to change, open root AFMTOOL folder in VSCode or other text editors and search '20' to see the places being hardcoded.)
 - Diameter:Pitch ratio is at least 1:2 (Used in choosing area to calculate polymer roughness. If need to change, go to util/roughness/roughness.py and change the section on getting polymer roughness.)
-- Contacts are circular. (Used in identifying copper contacts.)
+- Contacts are either circles or squares. (Used in identifying copper contacts.)
 
 ## Notes for future maintenance/updates
 ### Functions of key folders/files
