@@ -49,7 +49,7 @@ def find_circles(file_name, height_array, phase_data, min_flag, max_flag, pitch_
     if(phase_data is not None and check_radius_and_distance_and_number(detected_circles) == False):
         detected_circles = find_using_phase(file_name, phase_data,minRadiusHough, maxRadiusHough,minDistance)
     if(check_radius_and_distance_and_number(detected_circles) == False):
-        detected_circles = find_using_binary_filter(file_name, height_array,min_flag, maxRadiusHough,minDistance) #Note min_flag is passed instead 
+        detected_circles = find_using_binary_filter(file_name, gray_blurred,min_flag, maxRadiusHough,minDistance) #Note min_flag is passed instead 
         
     # Draw circles that are detected.
     if detected_circles is not None:
@@ -191,21 +191,21 @@ def find_using_phase(file_name, phase_data, minR, maxR, minDistance):
     
 
 
-def find_using_binary_filter(file_name, height_array, min_flag, maxR, minDistance):
+def find_using_binary_filter(file_name, blur, min_flag, maxR, minDistance):
     #print("Binary filter used for " + file_name)
     
     #Generate binary array    
-    height_avg = np.mean(height_array)
-    binary_height_array = height_array>height_avg
+    ret3,th3 = cv2.threshold(blur,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
     
     #Plot image
     img_path = "../AFMTOOL/misc/temp_images/binary_filter/"+str(file_name)+"2d_plot"
     fig, ax = plt.subplots(1, 1, figsize=(20, 20))
-    plt.imshow(binary_height_array)
+    plt.imshow(th3)
     fig.tight_layout()
     plt.axis('off')
     plt.title('')
     plt.savefig(img_path, bbox_inches='tight', pad_inches=0)
+    #plt.show()
     plt.close(fig)
     
     #Image processing and detecting circles

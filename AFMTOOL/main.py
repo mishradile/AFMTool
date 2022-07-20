@@ -95,13 +95,6 @@ for filename in filename_list:
         
         #Outputs in um
         step_height, pol_left_lim, pol_right_lim, roll_off= plot_line_profile(filename_formatted, height_array, vert_line, cu_sh_width, detected_circles[0, :][best_circle_index][0], detected_circles[0, :][best_circle_index][1],  detected_circles[0, :][best_circle_index][2])
-        i=0
-        #Check if limits are too close or no limits detected
-        while(pol_right_lim-pol_left_lim < detected_circles[i, :][best_circle_index][2]*20/768 or pol_left_lim is None or pol_right_lim is None):
-            i+=1
-            while(i in exclude_list):
-                i+=1
-            step_height, pol_left_lim, pol_right_lim, roll_off= plot_line_profile(filename_formatted, height_array, vert_line, cu_sh_width, detected_circles[i, :][best_circle_index][0], detected_circles[i, :][best_circle_index][1],  detected_circles[i, :][best_circle_index][2])
         
         insert_line_profile(filename_formatted, excel_file_path, file_no, step_height, roll_off)
         

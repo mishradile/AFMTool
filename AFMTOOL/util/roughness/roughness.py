@@ -74,7 +74,7 @@ def find_ra(array, detected_circles, exclude, cwinsize, polwinsize):
         y_pol = y-2*r
         half_pol_win_size_pix  = int(256*(0.5)*polwinsize/20)
         #Check at least a portion of sample area is in range
-        if(y_pol+half_pol_win_size_pix>0 and (x_pol)-half_pol_win_size_pix<256):
+        if(y_pol+half_pol_win_size_pix>4 and (x_pol)-half_pol_win_size_pix<252):
             pol_sample = array[max((y_pol)-half_pol_win_size_pix,0):min((y_pol)+half_pol_win_size_pix+1, 256), max(x_pol-half_pol_win_size_pix,0):min(x_pol+half_pol_win_size_pix+1, 256)] 
             pol_total_ra +=mean(absolute(pol_sample - mean(pol_sample)))
             pol_area_count+=1
