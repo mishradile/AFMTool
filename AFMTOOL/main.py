@@ -28,7 +28,7 @@ mask_file_path = create_mask_img_dir()
 
 
 #Clear data that no need to be stored/will be stored in Excel sheet
-dir_to_clear = ['../AFMTOOL/images/', '../AFMTOOL/line_profile_imgs/', '../results/ref_regions_imgs/', '../AFMTOOL/misc/temp_images/binary_filter/', '../AFMTOOL/misc/temp_images/diff_cmap/', '../AFMTOOL/misc/temp_images/phase/']
+dir_to_clear = ['../AFMTOOL/images/', '../AFMTOOL/line_profile_imgs/', '../results/ref_regions_imgs/', '../AFMTOOL/misc/temp_images/binary_filter/', '../AFMTOOL/misc/temp_images/diff_cmap/', '../AFMTOOL/misc/temp_images/phase/', '../AFMTOOL/misc/temp_images/phase_binary/']
 for dir in dir_to_clear:
     for f in os.listdir(dir):
         os.remove(os.path.join(dir, f))   

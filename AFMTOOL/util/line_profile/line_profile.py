@@ -14,6 +14,7 @@ def plot_line_profile(filename_formatted, array, vert_line, cu_sh_width, x, y, r
     x_index = int(x*256/768)
     y_index = int(y*256/768)
     r_index = int(r*256/768)
+    
     #Take average within band of width r/2
     if not vert_line:
         #Taking horizontal band
