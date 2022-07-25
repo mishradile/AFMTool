@@ -70,7 +70,7 @@ for filename in filename_list:
     
     
     if(detected_circles is None):
-        insert_ra(excel_file_path, "Programme Error: Could not find any contact points", "Programme Error: Could not find any contact points", file_no)
+        insert_ra(excel_file_path, "Programme Error: Could not find any Cu pads. Skipping to next file", "", file_no, "nil", "nil")
     else:
         
         #Mask is a binary numpy array with 0 in squares containing a detected circle
