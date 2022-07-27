@@ -34,9 +34,9 @@ def find_circles(file_name, height_array, phase_data, min_flag, max_flag, pitch_
     # User likely to input the actual min, max radius, need to modify to give tolerance.  
     # Default min, max assumed is min = 3um, max = 5um. 
     # Note minRadius and maxRadius are scaled for input into HoughCircles 
-    minRadiusHough = 40 if min_flag is None else int(min_flag*768/20-10) #+/- 10 for tolerance
+    minRadiusHough = 40 if min_flag is None else int(max(1, min_flag*768/20-10)) #+/- 10 for tolerance
     maxRadiusHough = 110 if max_flag is None else int(max_flag*768/20+10)
-    minDistance =200 if pitch_flag is None else int(pitch_flag*768/20-10)
+    minDistance =200 if pitch_flag is None else int(max(1, pitch_flag*768/20-10))
     
     detected_circles = cv2.HoughCircles(gray_blurred, 
                     cv2.HOUGH_GRADIENT, 1, minDistance, param1 = 35,
@@ -54,24 +54,8 @@ def find_circles(file_name, height_array, phase_data, min_flag, max_flag, pitch_
         detected_circles = find_phase_plus_binary(file_name, min_flag, maxRadiusHough,minDistance)
     # Draw circles that are detected.
     if detected_circles is not None:
-        
-  
         # Convert the circle parameters a, b and r to integers.
         detected_circles = np.uint16(np.around(detected_circles))
-
-        # Uncomment to generate image of identified circles
-        # for pt in detected_circles[0, :]:
-        #     a, b, r = pt[0], pt[1], pt[2]
-    
-        #     # Draw the circumference of the circle.
-        #     cv2.circle(img, (a, b), r, (0, 255, 0), 2)
-    
-        #     # Draw a small circle (of radius 1) to show the center.
-        #     cv2.circle(img, (a, b), 1, (0, 0, 255), 3)
-        # #cv2.imshow("Detected Circle", img)
-        # #Save image
-        # cv2.imwrite(target_dir_path+file_name[:-1]+".png", img)
-        #cv2.waitKey(0)
         return detected_circles
     else:
         # cv2.putText(img,'Error: No circles/copper contacts detected', 
@@ -153,6 +137,8 @@ def find_using_dif_cmap(file_name, height_array, minR, maxR,minDistance):
     img = ResizeWithAspectRatio(img, width =768)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     gray_blurred = cv2.medianBlur(gray,15)
+    #plt.imshow(gray_blurred)
+    #plt.show()
     detected_circles = cv2.HoughCircles(gray_blurred, 
                     cv2.HOUGH_GRADIENT, 1, minDistance, param1 = 35,
                 param2 = 27, minRadius = minR, maxRadius = maxR)
@@ -184,6 +170,8 @@ def find_using_phase(file_name, phase_data, minR, maxR, minDistance):
     img = ResizeWithAspectRatio(img, width =768)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     gray_blurred = cv2.medianBlur(gray,19)
+    #plt.imshow(gray_blurred)
+    #plt.show()
     detected_circles = cv2.HoughCircles(gray_blurred, 
                     cv2.HOUGH_GRADIENT, 1, minDistance, param1 = 70,
                 param2 = 27, minRadius = minR, maxRadius = maxR)
@@ -218,10 +206,10 @@ def find_using_binary_filter(file_name, blur, min_flag, maxR, minDistance):
                     cv2.HOUGH_GRADIENT, 2, minDistance, param1 = 70,
                 param2 = 10, minRadius = 0, maxRadius = maxR)
     
-    #Needs high blurring which can make circles smaller. If user spcifies a minimum radius, set all radius to minimum radius. 
-    if min_flag is not None:
+    #Needs high blurring which can make circles smaller. If user spcifies a minimum radius, set all radius to at least minimum radius. 
+    if min_flag is not None and detected_circles is not None:
         for i in range(len(detected_circles[0, :])):
-            detected_circles[0, i][2]=min_flag*768/20
+            detected_circles[0, i][2]=max(min_flag*768/20, detected_circles[0, i][2])
     
     return detected_circles
 
@@ -255,8 +243,8 @@ def find_phase_plus_binary(file_name, min_flag, maxR, minDistance):
                 param2 = 10, minRadius = 0, maxRadius = maxR)
     
     #Needs high blurring which can make circles smaller. If user spcifies a minimum radius, set all radius to minimum radius. 
-    if min_flag is not None:
+    if min_flag is not None and detected_circles is not None:
         for i in range(len(detected_circles[0, :])):
-            detected_circles[0, i][2]=min_flag*768/20
+            detected_circles[0, i][2]= max(min_flag*768/20, detected_circles[0, i][2])
     
     return detected_circles
