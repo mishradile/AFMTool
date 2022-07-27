@@ -111,8 +111,6 @@ def check_radius_and_distance_and_number(detected_circles):
     for i in range(len(center_list)-1):
         for j in range(i+1,len(center_list)):
             dist = ((center_list[i][0]-center_list[j][0])**2 + (center_list[i][1]-center_list[j][1])**2)**0.5
-            print(dist)
-            print(avg_radius)
             if dist < avg_radius*3:
                 #print("too near")
                 return False
@@ -250,18 +248,3 @@ def find_phase_plus_binary(file_name, min_flag, maxR, minDistance):
             detected_circles[0, i][2]= max(min_flag*768/20, detected_circles[0, i][2])
     
     return detected_circles
-
-
-# #Function used for testing
-# def show_circles(detected_circles):
-#     # Uncomment to generate image of identified circles
-#     for pt in detected_circles[0, :]:
-#         a, b, r = pt[0], pt[1], pt[2]
-
-#         # Draw the circumference of the circle.
-#         cv2.circle(img, (a, b), r, (0, 255, 0), 2)
-
-#         # Draw a small circle (of radius 1) to show the center.
-#         cv2.circle(img, (a, b), 1, (0, 0, 255), 3)
-#     #cv2.imshow("Detected Circle", img)
-#     cv2.waitKey(0)
