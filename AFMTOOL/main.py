@@ -82,6 +82,8 @@ for filename in filename_list:
         #Unless user specify useALL flag, use only best 3 circles detected for roughness calculations
         if not show_all:
             detected_circles = detected_circles[:, 0:3]
+        else:
+            detected_circles = detected_circles[:, 0:15]
         
         #Convert string to list, if None give empty list
         exclude_list = [] if exclude is None else list(map(int, exclude.split(',')))
