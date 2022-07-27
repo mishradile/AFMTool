@@ -2,7 +2,6 @@ import PySimpleGUI as sg
 import os
 
 def launch_gui():
-    show_all = False
     vert_line = False
     # The base64 strings for the button images
     toggle_btn_off = b'iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAABmJLR0QA/wD/AP+gvaeTAAAED0lEQVRYCe1WTWwbRRR+M/vnv9hO7BjHpElMKSlpqBp6gRNHxAFVcKM3qgohQSqoqhQ45YAILUUVDRxAor2VAweohMSBG5ciodJUSVqa/iikaePEP4nj2Ovdnd1l3qqJksZGXscVPaylt7Oe/d6bb9/svO8BeD8vA14GvAx4GXiiM0DqsXv3xBcJU5IO+RXpLQvs5yzTijBmhurh3cyLorBGBVokQG9qVe0HgwiXLowdy9aKsY3g8PA5xYiQEUrsk93JTtjd1x3siIZBkSWQudUK4nZO1w3QuOWXV+HuP/fL85klAJuMCUX7zPj4MW1zvC0Ej4yMp/w++K2rM9b70sHBYCjo34x9bPelsgp/XJksZ7KFuwZjr3732YcL64ttEDw6cq5bVuCvgy/sje7rT0sI8PtkSHSEIRIKgCQKOAUGM6G4VoGlwiqoVd2Za9Vl8u87bGJqpqBqZOj86eEHGNch+M7otwHJNq4NDexJD+59RiCEQG8qzslFgN8ibpvZNsBifgXmFvJg459tiOYmOElzYvr2bbmkD509e1ylGEZk1Y+Ssfan18n1p7vgqVh9cuiDxJPxKPT3dfGXcN4Tp3dsg/27hUQs0qMGpRMYjLz38dcxS7Dm3nztlUAb38p0d4JnLozPGrbFfBFm79c8hA3H2AxcXSvDz7/+XtZE1kMN23hjV7LTRnKBh9/cZnAj94mOCOD32gi2EUw4FIRUMm6LGhyiik86nO5NBdGRpxYH14bbjYfJteN/OKR7UiFZVg5T27QHYu0RBxoONV9W8KQ7QVp0iXdE8fANUGZa0QAvfhhXlkQcmjJZbt631oIBnwKmacYoEJvwiuFgWncWnXAtuVBBEAoVVXWCaQZzxmYuut68b631KmoVBEHMUUrJjQLXRAQVSxUcmrKVHfjWWjC3XOT1FW5QrWpc5IJdQhDKVzOigEqS5dKHMVplnNOqrmsXqUSkn+YzWaHE9RW1FeXL7SKZXBFUrXW6jIV6YTEvMAUu0W/G3kcxPXP5ylQZs4fa6marcWvvZfJu36kuHjlc/nMSuXz+/ejxgqPFpuQ/xVude9eu39Jxu27OLvBGoMjrUN04zrNMbgVmOBZ96iPdPZmYntH5Ls76KuxL9NyoLA/brav7n382emDfHqeooXyhQmARVhSnAwNNMx5bu3V1+habun5nWdXhwJZ2C5mirTesyUR738sv7g88UQ0rEkTDlp+1wwe8Pf0klegUenYlgyg7bby75jUTITs2rhCAXXQ2vwxz84vlB0tZ0wL4NEcLX/04OrrltG1s8aOrHhk51SaK0us+n/K2xexBxljcsm1n6x/Fuv1PCWGiKOaoQCY1Vb9gWPov50+fdEqd21ge3suAlwEvA14G/ucM/AuppqNllLGPKwAAAABJRU5ErkJggg=='
@@ -14,8 +13,8 @@ def launch_gui():
             [sg.Submit(key='-SUBMIT-'), sg.Button('Notes')]
     ]
     options_general_layout = [
-        [sg.Text('Detect all circles:'),
-        sg.Button(image_data=toggle_btn_off, key='-TOGGLE-GRAPHIC-', button_color=(sg.theme_background_color(), sg.theme_background_color()), border_width=0, metadata=False),
+        [sg.Text('No. of circles to detect: '),
+        sg.Input(key='-NumCircles-', size = 6),
         sg.Push(),
         sg.Text('Index of circles to exclude: '),sg.Input(key='-EXCLUDE-', size = 10), sg.Push()
         ],
@@ -61,14 +60,13 @@ def launch_gui():
         event, values = window.read()
         if event in (sg.WIN_CLOSED, 'Exit'):
             filename_list= None
-            show_all = None
             break
         elif event == '-SUBMIT-':
             break
         elif event == 'Help':
             sg.popup(
-                    "Detect all circles: ",
-                     "Use all circles detected for roughness and step height calculations. By default, only the best 3 circles detected will be used.", 
+                    "No. of circles to detect: ",
+                     "Choose how many Cu pads to detect for roughness and step height calculations. By default, only the best 3 circles detected will be used.", 
                      "Pitch: ",
                      "Define the minimum distance between center of contacts",
                      "Min and Max radius: ",
@@ -88,10 +86,6 @@ def launch_gui():
                 "If your parameters are out of this range please enter them in the Optional Inputs tab."
                 ,title='Notes',
             )
-        elif event == '-TOGGLE-GRAPHIC-':  # if the graphical button that changes images
-            window['-TOGGLE-GRAPHIC-'].metadata = not window['-TOGGLE-GRAPHIC-'].metadata
-            window['-TOGGLE-GRAPHIC-'].update(image_data=toggle_btn_on if window['-TOGGLE-GRAPHIC-'].metadata else toggle_btn_off)
-            show_all = show_all==False
         elif event == '-VERTLINE-':  # if the graphical button that changes images
             window['-VERTLINE-'].metadata = not window['-VERTLINE-'].metadata
             window['-VERTLINE-'].update(image_data=toggle_btn_on if window['-VERTLINE-'].metadata else toggle_btn_off)
@@ -105,13 +99,14 @@ def launch_gui():
     #Convert to floats for output, default output None to match that of legacy codes using Tkinter
     pitch = None if values['-PITCH-']=='' else float(values['-PITCH-'])
     minr = None if values['-MINR-']=='' else float(values['-MINR-'])
+    num_circles = None if values['-NumCircles-']=='' else int(values['-NumCircles-'])
     maxr = None if values['-MAXR-']=='' else float(values['-MAXR-'])
     exclude = None if values['-EXCLUDE-']=='' else values['-EXCLUDE-']
     cwinsize = 1 if values['-CWINSIZE-']=='' else float(values['-CWINSIZE-'])
     polwinsize = 2 if values['-POLWINSIZE-']=='' else float(values['-POLWINSIZE-'])
     shcopper = 0.8 if values['-SHCOPPER-']=='' else float(values['-SHCOPPER-'])/100
         
-    return filename_list, show_all,pitch, minr, maxr, exclude, cwinsize, polwinsize, vert_line, shcopper
+    return filename_list, num_circles,pitch, minr, maxr, exclude, cwinsize, polwinsize, vert_line, shcopper
 
 #launch_gui()
 

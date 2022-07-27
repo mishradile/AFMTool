@@ -17,7 +17,7 @@ from alive_progress import alive_bar
 import os
 
 #Launch GUI, and get any optional inputs given
-filename_list, show_all, pitch, minRadius, maxRadius, exclude, cwinsize, polwinsize, vert_line, cu_sh_width = launch_gui()
+filename_list, num_circles, pitch, minRadius, maxRadius, exclude, cwinsize, polwinsize, vert_line, cu_sh_width = launch_gui()
 
 start_time = time.time()
 
@@ -80,9 +80,10 @@ for filename in filename_list:
         height_array = height_data_flattened_with_mask.pixels
         
         #Unless user specify useALL flag, use only best 3 circles detected for roughness calculations
-        if not show_all:
+        if not num_circles:
             detected_circles = detected_circles[:, 0:3]
-        
+        else:
+            detected_circles = detected_circles[:, 0:num_circles]
         #Convert string to list, if None give empty list
         exclude_list = [] if exclude is None else list(map(int, exclude.split(',')))
         #Find index of best cirlce not excluded
