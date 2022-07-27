@@ -41,7 +41,7 @@ def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_l
             x_pol = x-2*r
             y_pol = y+2*r
             #If all polymer area out of bound, try take bottom left of each circle
-            if(y_pol<256 and x_pol<256):
+            if(y_pol<256 and x_pol>0):
                 ax.add_patch(Rectangle((x-2*r-12, y+2*r-12),
                     2*half_pol_win_size_pix, 2*half_pol_win_size_pix,
                     fc ='none', 
