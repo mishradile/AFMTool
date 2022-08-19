@@ -117,7 +117,7 @@ def done_gui(excel_file_path, done=True):
     msg = 'Processing completed successfully, Excel file has been generated.' if done else 'Process cancelled, Excel file has been generated for some data.'
     layout = [
         [sg.Text(msg)],
-        [sg.Button('Open Excel file'), sg.Button('Open file location'),sg.Push(), sg.Button('Close')]
+        [sg.Button('Open Excel file'), sg.Push(), sg.Button('Open file location'),sg.Push(),sg.Button('Back'),sg.Push(), sg.Button('Close')]
     ]
     
     window = sg.Window(title, layout)
@@ -132,8 +132,12 @@ def done_gui(excel_file_path, done=True):
             os.system("start EXCEL.EXE "+excel_file_path)
         elif event == 'Open file location':
             os.startfile(os.path.abspath(os.path.join(os.getcwd(), os.pardir, "results/", "xlSheets/")) )
+        elif event == 'Back':
+            window.close()
+            return True
         
     window.close()
+    return False
     
     
         
