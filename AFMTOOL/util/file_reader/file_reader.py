@@ -70,6 +70,13 @@ class Bruker:
         print("========")
         for x in [z[b'@2:Image Data'][0] for z in self.layers]:
             print("\t"+x.decode(encoding))
+    
+    def get_scan_size(self,  encoding='latin1'):
+        scan_size = self.layers[0][b'Scan Size'][0].split()
+        return int(scan_size[0])
+    
+    def get_line_num(self, encoding='latin1'):
+        return int(self.layers[0][b'Number of lines'][0])
 
     def get_channel(self, channel="Height Sensor", backward=False, corr=None, debug=False, encoding='latin1', lazy=True):
         """

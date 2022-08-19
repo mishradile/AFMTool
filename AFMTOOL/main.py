@@ -45,8 +45,13 @@ for filename in filename_list:
     #Format filename for saving
     #Remove .spm at the end and replace '.' and space with '_'
     filename_formatted = filename.split("/")[-1][:-3].replace('.', '_').replace(' ', '_')
+    #Get length of file in um
+    scan_size = scan.get_scan_size()
+    #print(scan_size)
+    #Get length of file in number of pixels
+    scan_pixels_len = scan.get_line_num()
+    #print(scan_pixels_len)
 
-    #topo = scan.get_channel()
     try:
         height_data = scan.get_channel("Height Sensor") 
         phase_data = scan.get_channel("Phase") 
@@ -65,7 +70,7 @@ for filename in filename_list:
     img_path_2d = draw_2d_plot(height_array, filename_formatted)
     
     #Identify copper contacts
-    detected_circles = find_circles(filename_formatted, height_array, phase_data, minRadius, maxRadius, pitch)
+    detected_circles = find_circles(filename_formatted, height_array, phase_data, minRadius, maxRadius, pitch, scan_size)
     
     
     
@@ -74,7 +79,7 @@ for filename in filename_list:
     else:
         
         #Mask is a binary numpy array with 0 in squares containing a detected circle
-        mask = get_mask(detected_circles, mask_file_path, filename_formatted)
+        mask = get_mask(detected_circles, mask_file_path, filename_formatted, scan_pixels_len)
         
         height_data_flattened_with_mask = height_data.corr_fit2d(mask = mask, inline=False, nx=3, ny=3).filter_scars_removal()
         height_array = height_data_flattened_with_mask.pixels
@@ -90,12 +95,12 @@ for filename in filename_list:
         best_circle_index =0
         while(best_circle_index+1 in exclude_list):
             best_circle_index+=1
-        ra, pol_ra, take_bottom_left, cu_ra_list, pol_ra_list = find_ra(height_array, detected_circles, exclude_list, cwinsize, polwinsize)
+        ra, pol_ra, take_bottom_left, cu_ra_list, pol_ra_list = find_ra(height_array, detected_circles, exclude_list, cwinsize, polwinsize, scan_size, scan_pixels_len)
         
         insert_ra(excel_file_path, ra, pol_ra, file_no, cu_ra_list, pol_ra_list)
         
         #Outputs in um
-        step_height, pol_left_lim, pol_right_lim, roll_off= plot_line_profile(filename_formatted, height_array, vert_line, cu_sh_width, detected_circles[0, :][best_circle_index][0], detected_circles[0, :][best_circle_index][1],  detected_circles[0, :][best_circle_index][2])
+        step_height, pol_left_lim, pol_right_lim, roll_off= plot_line_profile(filename_formatted, height_array, vert_line, cu_sh_width, detected_circles[0, :][best_circle_index][0], detected_circles[0, :][best_circle_index][1],  detected_circles[0, :][best_circle_index][2], scan_size, scan_pixels_len)
         
         insert_line_profile(filename_formatted, excel_file_path, file_no, step_height, roll_off)
         
@@ -103,7 +108,7 @@ for filename in filename_list:
         insert_ref_image(filename_formatted, excel_file_path, file_no)
 
     #Plot 3D graph
-    img_path_3d = draw_3d_plot(height_array, filename_formatted)
+    img_path_3d = draw_3d_plot(height_array, filename_formatted, scan_size)
     
     insert_xl(excel_file_path, img_path_2d, img_path_3d,file_no)
     

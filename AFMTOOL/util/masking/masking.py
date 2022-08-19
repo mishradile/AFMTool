@@ -11,13 +11,13 @@ datetime_SG = datetime.now(tz_SG)
 format_timestring = datetime_SG.strftime("%m%d%Y%H%M")
 
 
-def get_mask(detected_circles, mask_dir, filename_formatted):
-    mask = np.ones((256,256))
+def get_mask(detected_circles, mask_dir, filename_formatted, scan_pixels_len):
+    mask = np.ones((scan_pixels_len,scan_pixels_len))
     for pt in detected_circles[0, :]:
         #Get x, y, r in pixels
-        x,y, r = int(pt[0]*256/768), int(pt[1]*256/768), int(pt[2]*256/768)
+        x,y, r = int(pt[0]*scan_pixels_len/768), int(pt[1]*scan_pixels_len/768), int(pt[2]*scan_pixels_len/768)
         #Mask out contact points
-        mask[max(0, y-r): min(256, y+r+1), max(0,x-r):min(256, x+r+1)] =0
+        mask[max(0, y-r): min(scan_pixels_len, y+r+1), max(0,x-r):min(scan_pixels_len, x+r+1)] =0
     plt.imshow(mask)
     plt.axis('off')
     plt.title('')

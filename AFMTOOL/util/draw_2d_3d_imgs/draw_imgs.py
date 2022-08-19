@@ -25,7 +25,7 @@ def draw_2d_plot(height_array, filename_formatted):
     return img_path_2d
 
 
-def draw_3d_plot(height_array, filename_formatted):
+def draw_3d_plot(height_array, filename_formatted, scan_size):
     #Plot 3D graph
     # Create figure and add axis
 
@@ -60,7 +60,7 @@ def draw_3d_plot(height_array, filename_formatted):
     ax.get_proj = lambda: np.dot(Axes3D.get_proj(ax), np.diag([1, 1, 0.5, 1]))
 
     # Create meshgrid, grid labels will be in micrometer
-    X, Y = np.meshgrid(np.linspace(0, 20, len(height_array)), np.linspace(0, 20, len(height_array)))
+    X, Y = np.meshgrid(np.linspace(0, scan_size, len(height_array)), np.linspace(0, scan_size, len(height_array)))
     # Plot surface
     # TODO: Experiement with different colors
     plot = ax.plot_surface(X=X, Y=Y, Z=height_array, cmap='YlOrBr' ,rstride=1, cstride=1, alpha=None)
