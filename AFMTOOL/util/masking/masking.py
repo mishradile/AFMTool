@@ -5,10 +5,10 @@ import os
 
 from datetime import datetime
 import pytz
-tz_SG = pytz.timezone('Asia/Singapore') 
-datetime_SG = datetime.now(tz_SG)
+
 #For saving files with timestamps 
-format_timestring = datetime_SG.strftime("%m%d%Y%H%M")
+
+
 
 
 def get_mask(detected_circles, mask_dir, filename_formatted):
@@ -27,6 +27,9 @@ def get_mask(detected_circles, mask_dir, filename_formatted):
     return mask ==1
 
 def create_mask_img_dir():
+    tz_SG = pytz.timezone('Asia/Singapore') 
+    datetime_SG = datetime.now(tz_SG)
+    format_timestring = datetime_SG.strftime("%m%d%Y%H%M%S")
     #Make directory to store images for manual confirmation
     img_dir_path = "../results/masks/"+format_timestring+"/"
     os.makedirs(img_dir_path)

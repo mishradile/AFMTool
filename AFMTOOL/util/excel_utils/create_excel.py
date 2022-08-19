@@ -8,11 +8,6 @@ from openpyxl.utils import get_column_letter
 workbook = Workbook()
 sheet = workbook.active
 
-tz_SG = pytz.timezone('Asia/Singapore') 
-datetime_SG = datetime.now(tz_SG)
-#For saving files with timestamps 
-format_timestring = datetime_SG.strftime("%m%d%Y%H%M")
-
 blueFill = PatternFill(start_color='000066CC',
                    end_color='000066CC',
                    fill_type='solid')
@@ -68,6 +63,10 @@ def create_xl_template():
             
     sheet.column_dimensions['A'].width = 25
 
+    tz_SG = pytz.timezone('Asia/Singapore') 
+    datetime_SG = datetime.now(tz_SG)
+    #For saving files with timestamps 
+    format_timestring = datetime_SG.strftime("%m%d%Y%H%M")
     target_path = "../results/xlSheets/"+ format_timestring+ "_AFMResults.xlsx"
     workbook.save(target_path)
     
