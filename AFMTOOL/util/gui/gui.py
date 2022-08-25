@@ -134,6 +134,7 @@ def done_gui(excel_file_path, done=True):
             os.startfile(os.path.abspath(os.path.join(os.getcwd(), os.pardir, "results/", "xlSheets/")) )
         elif event == 'Back':
             window.close()
+            #Return True to tell program to restart main window
             return True
         
     window.close()

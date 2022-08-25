@@ -126,6 +126,7 @@ def main():
 
 if __name__ == "__main__":
     restart = main()
+    #If user clicks back button, restart main window
     while restart is not False:
         restart = main()
 
