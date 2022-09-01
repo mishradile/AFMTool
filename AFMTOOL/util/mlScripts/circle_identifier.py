@@ -15,7 +15,7 @@ datetime_SG = datetime.now(tz_SG)
 format_timestring = datetime_SG.strftime("%m%d%Y%H%M")
 
 #Main function
-def find_circles(file_name, height_array, phase_data, min_flag, max_flag, pitch_flag, scan_size):
+def find_circles(file_name, height_array, phase_data, min_flag, max_flag, pitch_flag):
     """ 
     Returns coordinate of circles found
     """
@@ -34,9 +34,9 @@ def find_circles(file_name, height_array, phase_data, min_flag, max_flag, pitch_
     # User likely to input the actual min, max radius, need to modify to give tolerance.  
     # Default min, max assumed is min = 3um, max = 5um. 
     # Note minRadius and maxRadius are scaled for input into HoughCircles 
-    minRadiusHough = 40 if min_flag is None else int(max(1, min_flag*768/scan_size-10)) #+/- 10 for tolerance
-    maxRadiusHough = 110 if max_flag is None else int(max_flag*768/scan_size+10)
-    minDistance =200 if pitch_flag is None else int(max(1, pitch_flag*768/scan_size-10))
+    minRadiusHough = 40 if min_flag is None else int(max(1, min_flag*768/20-10)) #+/- 10 for tolerance
+    maxRadiusHough = 110 if max_flag is None else int(max_flag*768/20+10)
+    minDistance =200 if pitch_flag is None else int(max(1, pitch_flag*768/20-10))
     
     detected_circles = cv2.HoughCircles(gray_blurred, 
                     cv2.HOUGH_GRADIENT, 1, minDistance, param1 = 35,
@@ -148,7 +148,7 @@ def find_using_dif_cmap(file_name, height_array, minR, maxR,minDistance):
 
 def find_using_phase(file_name, phase_data, minR, maxR, minDistance):
     
-    print("Phase used for file: " + file_name)
+    #print("Phase used for file: " + file_name)
 
     #Converting phase data to array
     phase_data_correct_plane = phase_data.corr_fit2d(inline=False, nx=2, ny=2).filter_scars_removal()
@@ -181,7 +181,7 @@ def find_using_phase(file_name, phase_data, minR, maxR, minDistance):
 
 
 def find_using_binary_filter(file_name, blur, min_flag, maxR, minDistance):
-    print("Binary filter used for " + file_name)
+    #print("Binary filter used for " + file_name)
     
     #Generate binary array    
     ret3,th3 = cv2.threshold(blur,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
@@ -209,7 +209,7 @@ def find_using_binary_filter(file_name, blur, min_flag, maxR, minDistance):
     #Needs high blurring which can make circles smaller. If user spcifies a minimum radius, set all radius to at least minimum radius. 
     if min_flag is not None and detected_circles is not None:
         for i in range(len(detected_circles[0, :])):
-            detected_circles[0, i][2]=max(min_flag*768/scan_size, detected_circles[0, i][2])
+            detected_circles[0, i][2]=max(min_flag*768/20, detected_circles[0, i][2])
     
     return detected_circles
 
@@ -245,6 +245,6 @@ def find_phase_plus_binary(file_name, min_flag, maxR, minDistance):
     #Needs high blurring which can make circles smaller. If user spcifies a minimum radius, set all radius to minimum radius. 
     if min_flag is not None and detected_circles is not None:
         for i in range(len(detected_circles[0, :])):
-            detected_circles[0, i][2]= max(min_flag*768/scan_size, detected_circles[0, i][2])
+            detected_circles[0, i][2]= max(min_flag*768/20, detected_circles[0, i][2])
     
     return detected_circles

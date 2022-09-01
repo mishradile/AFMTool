@@ -47,10 +47,9 @@ for filename in filename_list:
     filename_formatted = filename.split("/")[-1][:-3].replace('.', '_').replace(' ', '_')
     #Get length of file in um
     scan_size = scan.get_scan_size()
-    #print(scan_size)
+
     #Get length of file in number of pixels
     scan_pixels_len = scan.get_line_num()
-    #print(scan_pixels_len)
 
     try:
         height_data = scan.get_channel("Height Sensor") 
@@ -70,7 +69,7 @@ for filename in filename_list:
     img_path_2d = draw_2d_plot(height_array, filename_formatted)
     
     #Identify copper contacts
-    detected_circles = find_circles(filename_formatted, height_array, phase_data, minRadius, maxRadius, pitch, scan_size)
+    detected_circles = find_circles(filename_formatted, height_array, phase_data, minRadius, maxRadius, pitch)
     
     
     
@@ -95,16 +94,16 @@ for filename in filename_list:
         best_circle_index =0
         while(best_circle_index+1 in exclude_list):
             best_circle_index+=1
-        ra, pol_ra, take_bottom_left, cu_ra_list, pol_ra_list = find_ra(height_array, detected_circles, exclude_list, cwinsize, polwinsize, scan_size, scan_pixels_len)
+        ra, pol_ra, take_bottom_left, take_near, cu_ra_list, pol_ra_list = find_ra(height_array, detected_circles, exclude_list, cwinsize, polwinsize, scan_pixels_len)
         
         insert_ra(excel_file_path, ra, pol_ra, file_no, cu_ra_list, pol_ra_list)
         
         #Outputs in um
-        step_height, pol_left_lim, pol_right_lim, roll_off= plot_line_profile(filename_formatted, height_array, vert_line, cu_sh_width, detected_circles[0, :][best_circle_index][0], detected_circles[0, :][best_circle_index][1],  detected_circles[0, :][best_circle_index][2], scan_size, scan_pixels_len)
+        step_height, pol_left_lim, pol_right_lim, roll_off= plot_line_profile(filename_formatted, height_array, vert_line, cu_sh_width, detected_circles[0, :][best_circle_index][0], detected_circles[0, :][best_circle_index][1],  detected_circles[0, :][best_circle_index][2], scan_pixels_len)
         
         insert_line_profile(filename_formatted, excel_file_path, file_no, step_height, roll_off)
         
-        draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_lim, pol_right_lim, take_bottom_left, exclude_list, best_circle_index, cwinsize, polwinsize, vert_line,cu_sh_width )
+        draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_lim, pol_right_lim, take_bottom_left, take_near, exclude_list, best_circle_index, cwinsize, polwinsize, vert_line,cu_sh_width )
         insert_ref_image(filename_formatted, excel_file_path, file_no)
 
     #Plot 3D graph

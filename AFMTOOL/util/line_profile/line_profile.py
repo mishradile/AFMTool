@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 #Assumes contacts are in horizontal array
-def plot_line_profile(filename_formatted, array, vert_line, cu_sh_width, x, y, r, scan_size, scan_pixels_len):
+def plot_line_profile(filename_formatted, array, vert_line, cu_sh_width, x, y, r, scan_pixels_len):
     
     avg_height = np.mean(array)
     
@@ -31,7 +31,7 @@ def plot_line_profile(filename_formatted, array, vert_line, cu_sh_width, x, y, r
         
     
     
-    fig_x = np.linspace(0,scan_size,scan_pixels_len)
+    fig_x = np.linspace(0,20,scan_pixels_len)
     fig = plt.figure(figsize=(18,12))
     ax = plt.subplot(111)
     ax.plot(fig_x, line_data, color ="blue")
@@ -39,12 +39,12 @@ def plot_line_profile(filename_formatted, array, vert_line, cu_sh_width, x, y, r
     ax.set_xlabel('μm', fontsize=10)
     
     #Plot vertical lines denoting copper contact
-    r_um = r*scan_size/768 #Get radius in um
+    r_um = r*20/768 #Get radius in um
     if not vert_line:
-        x_um = x*scan_size/768
+        x_um = x*20/768
     else:
         #TODO: Change naming
-        x_um = y*scan_size/768
+        x_um = y*20/768
     #Take range slightly smaller than r to be safe
     left_lim = x_um-r_um*cu_sh_width
     right_lim = x_um+r_um*cu_sh_width
@@ -55,8 +55,8 @@ def plot_line_profile(filename_formatted, array, vert_line, cu_sh_width, x, y, r
     #avg_line = np.mean(line_data)
     #ax.plot((0,19), (avg_line, avg_line), color='red', linestyle='-.')
     
-    left_lim_index = int(left_lim*scan_pixels_len/scan_size)
-    right_lim_index = int(right_lim*scan_pixels_len/scan_size)
+    left_lim_index = int(left_lim*scan_pixels_len/20)
+    right_lim_index = int(right_lim*scan_pixels_len/20)
     avg_copper_height = np.mean(line_data[int(left_lim_index):int(right_lim_index)])
     
     dishing = True if (avg_copper_height<avg_height) else False
@@ -71,29 +71,29 @@ def plot_line_profile(filename_formatted, array, vert_line, cu_sh_width, x, y, r
         #Note that find_pol_limit gives index, need to convert to um
         
         #Used for calculation of roll off
-        cut_off_limit = find_pol_limit(line_data, int((pol_right_lim)*scan_pixels_len/scan_size), avg_height, avg_copper_height, dishing, False, int(r_um*scan_pixels_len/scan_size))
+        cut_off_limit = find_pol_limit(line_data, int((pol_right_lim)*scan_pixels_len/20), avg_height, avg_copper_height, dishing, False, int(r_um*scan_pixels_len/20))
         cut_off_height = line_data[cut_off_limit]
-        ax.plot(((scan_size/scan_pixels_len)*cut_off_limit, (scan_size/scan_pixels_len)*cut_off_limit), (min(line_data), 0.1+max(line_data)), color='green', linestyle='--')
-        pol_left_lim = (scan_size/scan_pixels_len)*cut_off_limit+0.2*r_um
+        ax.plot(((20/scan_pixels_len)*cut_off_limit, (20/scan_pixels_len)*cut_off_limit), (min(line_data), 0.1+max(line_data)), color='green', linestyle='--')
+        pol_left_lim = (20/scan_pixels_len)*cut_off_limit+0.2*r_um
         ax.plot((pol_left_lim, pol_left_lim), (min(line_data), 0.1+max(line_data)), color='red', linestyle='-.')
     else:
         pol_left_lim = x_um+r_um*1.2
         ax.plot((pol_left_lim, pol_left_lim), (min(line_data), 0.1+max(line_data)), color='red', linestyle='-.')
-        cut_off_limit = find_pol_limit(line_data, int((pol_left_lim)*scan_pixels_len/scan_size), avg_height, avg_copper_height, dishing, True, int(r_um*scan_pixels_len/scan_size))
+        cut_off_limit = find_pol_limit(line_data, int((pol_left_lim)*scan_pixels_len/20), avg_height, avg_copper_height, dishing, True, int(r_um*scan_pixels_len/20))
         cut_off_height = line_data[cut_off_limit]
-        ax.plot(((scan_size/scan_pixels_len)*cut_off_limit, (scan_size/scan_pixels_len)*cut_off_limit), (min(line_data), 0.1+max(line_data)), color='green', linestyle='--')
-        pol_right_lim = (scan_size/scan_pixels_len)*cut_off_limit-0.2*r_um
+        ax.plot(((20/scan_pixels_len)*cut_off_limit, (20/scan_pixels_len)*cut_off_limit), (min(line_data), 0.1+max(line_data)), color='green', linestyle='--')
+        pol_right_lim = (20/scan_pixels_len)*cut_off_limit-0.2*r_um
         ax.plot((pol_right_lim, pol_right_lim), (min(line_data), 0.1+max(line_data)), color='red', linestyle='-.')
     img_path = "../AFMTOOL/line_profile_imgs/"+str(filename_formatted)+"line_plot"
     
     #Plot roll off lines
-    pol_center = int((scan_pixels_len/scan_size)*(pol_left_lim+pol_right_lim)/2)
+    pol_center = int((scan_pixels_len/20)*(pol_left_lim+pol_right_lim)/2)
     pol_center_height = line_data[pol_center]
-    ax.plot(((scan_size/scan_pixels_len)*pol_center, (scan_size/scan_pixels_len)*pol_center), (min(line_data), 0.1+max(line_data)), color='green', linestyle='--')
+    ax.plot(((20/scan_pixels_len)*pol_center, (20/scan_pixels_len)*pol_center), (min(line_data), 0.1+max(line_data)), color='green', linestyle='--')
     plt.savefig(img_path, bbox_inches='tight')
     
     plt.close(fig)
-    avg_pol_height = np.mean(line_data[int(pol_left_lim*scan_pixels_len/scan_size):int(pol_right_lim*scan_pixels_len/scan_size)])
+    avg_pol_height = np.mean(line_data[int(pol_left_lim*scan_pixels_len/20):int(pol_right_lim*scan_pixels_len/20)])
     #Calculate roll off
     
     roll_off = pol_center_height - cut_off_height
@@ -128,7 +128,7 @@ def insert_line_profile(filename_formatted, excel_file_path, col_num, step_heigh
 def find_pol_limit(array, first_limit, avg_height, avg_copper_height, dishing, search_right, r_pixel):
 
     index = first_limit
-
+    
     if(dishing):
         if(search_right):
             #+15 so starting finding closer to the center of polymer, to avoid roll off regions
