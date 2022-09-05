@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
-def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_lim, pol_right_lim, take_bottom_left = False, exclude=[], best_circle_index=0, cwinsize=1, polwinsize=2, vert_line=False, cu_sh_width=0.8):
+#Currently has repetitive codes from roughness.py. TODO: Get areas used for roughness as array and use that to draw ref images
+def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_lim, pol_right_lim, take_bottom_left = False, take_near = False, exclude=[], best_circle_index=0, cwinsize=1, polwinsize=2, vert_line=False, cu_sh_width=0.8, scan_pixels_len=256):
     #Note pol_left_lim, pol_right_lim are measured in um, need to convert to pixels
-    pol_left_lim = pol_left_lim*256/20
-    pol_right_lim = pol_right_lim*256/20
+    pol_left_lim = pol_left_lim*scan_pixels_len/20
+    pol_right_lim = pol_right_lim*scan_pixels_len/20
     #Plot of height data for Excel report 
     fig, ax = plt.subplots(1, 1, figsize=(20, 20))
     #phase_data.show(ax=ax[0])
@@ -14,8 +15,8 @@ def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_l
     
     for i in [x for x in range(len(detected_circles[0, :])) if x+1 not in exclude]:
         pt = detected_circles[0,i]
-        x,y, r = int(pt[0]*256/768), int(pt[1]*256/768), int(pt[2]*256/768)
-        half_window_size_pix = int(256*(0.5)*cwinsize/20)
+        x,y, r = int(pt[0]*scan_pixels_len/768), int(pt[1]*scan_pixels_len/768), int(pt[2]*scan_pixels_len/768)
+        half_window_size_pix = int(scan_pixels_len*(0.5)*cwinsize/20)
         #Square where copper Ra is calculated
         ax.add_patch(Rectangle((x-half_window_size_pix, y-half_window_size_pix),
                         2*half_window_size_pix, 2*half_window_size_pix,
@@ -26,9 +27,9 @@ def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_l
         plt.text(x-half_window_size_pix, y-half_window_size_pix+4, cu_count, fontsize=25)
         cu_count+=1
         #Square where polymer Ra is calculated
-        half_pol_win_size_pix  = int(256*(0.5)*polwinsize/20)
-        if(not take_bottom_left):
-            if(x+2*r<256 and y-2*r>0):
+        half_pol_win_size_pix  = int(scan_pixels_len*(0.5)*polwinsize/20)
+        if(not take_bottom_left and not take_near):
+            if(x+2*r<scan_pixels_len and y-2*r>0):
                 ax.add_patch(Rectangle((x+2*r-half_pol_win_size_pix, y-2*r-half_pol_win_size_pix),
                                 2*half_pol_win_size_pix, 2*half_pol_win_size_pix,
                                 fc ='none', 
@@ -37,33 +38,44 @@ def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_l
                 #Place text at bottom left of box
                 plt.text(x+2*r-half_pol_win_size_pix, y-2*r+half_pol_win_size_pix, pol_count, fontsize=25)
                 pol_count+=1
-        else:
+        elif take_bottom_left:
             x_pol = x-2*r
             y_pol = y+2*r
             #If all polymer area out of bound, try take bottom left of each circle
-            if(y_pol<256 and x_pol>0):
-                ax.add_patch(Rectangle((x-2*r-12, y+2*r-12),
+            if(y_pol<scan_pixels_len and x_pol>0):
+                ax.add_patch(Rectangle((x_pol-half_pol_win_size_pix, y_pol-half_pol_win_size_pix),
                     2*half_pol_win_size_pix, 2*half_pol_win_size_pix,
                     fc ='none', 
                     ec ='r',
                     lw = 3) )
                 plt.text(x-2*r+half_pol_win_size_pix, y+2*r-half_pol_win_size_pix, pol_count, fontsize=25)
-                pol_count+=1          
+                pol_count+=1    
+        elif take_near:
+            x_pol = int(x+0.707*r+half_pol_win_size_pix)+3
+            y_pol = int(y+0.707*r+half_pol_win_size_pix)+3      
+            ax.add_patch(Rectangle((x_pol-half_pol_win_size_pix, y_pol-half_pol_win_size_pix),
+                    2*half_pol_win_size_pix, 2*half_pol_win_size_pix,
+                    fc ='none', 
+                    ec ='r',
+                    lw = 3) )
+            pol_count+=1
     #Draw boundaries where line profile is taken 
-    best_circle_x = int(detected_circles[0][best_circle_index][0]*256/768)
-    best_circle_y = int(detected_circles[0][best_circle_index][1]*256/768)
-    best_circle_r = int(detected_circles[0][best_circle_index][2]*256/768)
+    best_circle_x = int(detected_circles[0][best_circle_index][0]*scan_pixels_len/768)
+    best_circle_y = int(detected_circles[0][best_circle_index][1]*scan_pixels_len/768)
+    best_circle_r = int(detected_circles[0][best_circle_index][2]*scan_pixels_len/768)
     
     if not vert_line: 
         line_profile_upper_lim = best_circle_y-best_circle_r/2
         line_profile_lower_lim = best_circle_y+best_circle_r/2
      
         #Two boxes denoting areas where step height is calculated from
+        #Polymer box
         ax.add_patch(Rectangle((pol_left_lim, line_profile_upper_lim),
                             pol_right_lim-pol_left_lim, best_circle_r,
                             fc ='none', 
                             ec ='b',
                             lw = 3) )
+        #Cu pad box
         ax.add_patch(Rectangle((best_circle_x-cu_sh_width*best_circle_r, line_profile_upper_lim),
                             2*cu_sh_width*best_circle_r, best_circle_r,
                             fc ='none', 
@@ -72,12 +84,12 @@ def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_l
         
         #Two horizontal lines denoting line profile data 
         ax.add_patch(Rectangle((0, line_profile_lower_lim),
-                            256, 0,
+                            scan_pixels_len, 0,
                             fc ='none', 
                             ec ='b',
                             lw = 3) )
         ax.add_patch(Rectangle((0, line_profile_upper_lim),
-                            256, 0,
+                            scan_pixels_len, 0,
                             fc ='none', 
                             ec ='b',
                             lw = 3) )
@@ -105,12 +117,12 @@ def draw_ref_imgs(height_array, detected_circles, filename_formatted, pol_left_l
         
         #Two horizontal lines denoting line profile data 
         ax.add_patch(Rectangle((line_profile_left_lim, 0),
-                            0, 256,
+                            0, scan_pixels_len,
                             fc ='none', 
                             ec ='b',
                             lw = 3) )
         ax.add_patch(Rectangle((line_profile_right_lim, 0),
-                            0, 256,
+                            0, scan_pixels_len,
                             fc ='none', 
                             ec ='b',
                             lw = 3) )     

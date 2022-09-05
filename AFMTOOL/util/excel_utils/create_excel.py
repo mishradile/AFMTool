@@ -4,6 +4,7 @@ from openpyxl.styles import PatternFill, Border, Alignment, Side
 import openpyxl
 import pytz
 from openpyxl.utils import get_column_letter
+from pathlib import Path
 
 workbook = Workbook()
 sheet = workbook.active
@@ -68,8 +69,16 @@ def create_xl_template():
     #For saving files with timestamps 
     format_timestring = datetime_SG.strftime("%m%d%Y%H%M")
     target_path = "../results/xlSheets/"+ format_timestring+ "_AFMResults.xlsx"
-    workbook.save(target_path)
     
+    if Path(target_path).is_file():
+        n=1
+        while(Path("../results/xlSheets/"+ format_timestring+ "_AFMResults ("+str(n)+").xlsx").is_file()):
+            n+=1
+        target_path = "../results/xlSheets/"+ format_timestring+ "_AFMResults ("+str(n)+").xlsx"
+        workbook.save(target_path)
+    else:
+        workbook.save(target_path)
+        
     return target_path
 
 def insert_xl(excel_file_path, img_path_2d, img_path_3d, col_num):

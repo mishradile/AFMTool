@@ -91,9 +91,9 @@ def check_radius_and_distance_and_number(detected_circles):
     if(detected_circles is None):
         #print("none detected")
         return False
-    if(len(detected_circles[0])==1):
-        #print("one detected")
-        return False
+    # if(len(detected_circles[0])==1):
+    #     #print("one detected")
+    #     return False
     radius_sum =0
     max_rad = 0
     min_rad = 999
