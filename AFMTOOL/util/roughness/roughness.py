@@ -25,7 +25,7 @@ datetime_SG = datetime.now(tz_SG)
 #For saving files with timestamps 
 format_timestring = datetime_SG.strftime("%m%d%Y%H%M")
 
-def find_ra(array, detected_circles, exclude, cwinsize, polwinsize):
+def find_ra(array, detected_circles, exclude, cwinsize, polwinsize, scan_pixels_len):
     """ 
     Returns average roughness of region of copper contact centered at (x,y), 
     with default side length of region = 13 pixels = 1.016 micrometer for copper,
@@ -44,6 +44,7 @@ def find_ra(array, detected_circles, exclude, cwinsize, polwinsize):
     circles_count=0
     pol_area_count =0
     take_bottom_left = False
+    take_near = False
     #Using string to store as list gives some problem with formating decimals
     cu_ra_list=""
     pol_ra_list =""
@@ -53,16 +54,16 @@ def find_ra(array, detected_circles, exclude, cwinsize, polwinsize):
         pt = detected_circles[0,i]
         circles_count+=1
         
-        x,y, r = int(pt[0]*256/768), int(pt[1]*256/768), int(pt[2]*256/768)
-        half_window_size_pix = int(256*(0.5)*cwinsize/20)
+        x,y, r = int(pt[0]*scan_pixels_len/768), int(pt[1]*scan_pixels_len/768), int(pt[2]*scan_pixels_len/768)
+        half_window_size_pix = int(scan_pixels_len*(0.5)*cwinsize/20)
     
         
         #Define sample area to calculate roughness 
         #used min, max in case selected center is too close to the borders
         #TODO: Record in doc coordinate system 
-        sample = array[max(0, y-half_window_size_pix): min(256, y+half_window_size_pix+1), max(0,x-half_window_size_pix):min(256, x+half_window_size_pix+1)]
+        sample = array[max(0, y-half_window_size_pix): min(scan_pixels_len, y+half_window_size_pix+1), max(0,x-half_window_size_pix):min(scan_pixels_len, x+half_window_size_pix+1)]
         #Uncomment to show area used
-        # array[max(0, y-half_window_size_pix): min(256, y+half_window_size_pix+1), max(0,x-half_window_size_pix):min(256, x+half_window_size_pix+1)] =0
+        # array[max(0, y-half_window_size_pix): min(scan_pixels_len, y+half_window_size_pix+1), max(0,x-half_window_size_pix):min(scan_pixels_len, x+half_window_size_pix+1)] =0
         # plt.imshow(array, cmap="copper")
         # plt.show()
         #print(mean(absolute(sample - mean(sample))))
@@ -72,10 +73,10 @@ def find_ra(array, detected_circles, exclude, cwinsize, polwinsize):
         #Polymer roughness 
         x_pol = x+2*r
         y_pol = y-2*r
-        half_pol_win_size_pix  = int(256*(0.5)*polwinsize/20)
+        half_pol_win_size_pix  = int(scan_pixels_len*(0.5)*polwinsize/20)
         #Check at least a portion of sample area is in range
-        if(y_pol>0 and x_pol<256):
-            pol_sample = array[max((y_pol)-half_pol_win_size_pix,0):min((y_pol)+half_pol_win_size_pix+1, 256), max(x_pol-half_pol_win_size_pix,0):min(x_pol+half_pol_win_size_pix+1, 256)] 
+        if(y_pol>0 and x_pol<scan_pixels_len):
+            pol_sample = array[max((y_pol)-half_pol_win_size_pix,0):min((y_pol)+half_pol_win_size_pix+1, scan_pixels_len), max(x_pol-half_pol_win_size_pix,0):min(x_pol+half_pol_win_size_pix+1, scan_pixels_len)] 
             pol_total_ra +=mean(absolute(pol_sample - mean(pol_sample)))
             pol_area_count+=1
             pol_ra_list+=str("{:.3f}".format(mean(absolute(pol_sample - mean(pol_sample)))))+"/"
@@ -90,18 +91,39 @@ def find_ra(array, detected_circles, exclude, cwinsize, polwinsize):
         for i in [x for x in range(len(detected_circles[0, :])) if x+1 not in exclude]:
         
             pt = detected_circles[0,i]
-            x,y, r = int(pt[0]*256/768), int(pt[1]*256/768), int(pt[2]*256/768)
+            x,y, r = int(pt[0]*scan_pixels_len/768), int(pt[1]*scan_pixels_len/768), int(pt[2]*scan_pixels_len/768)
             #Polymer roughness 
             x_pol = x-2*r
             y_pol = y+2*r
             #If all polymer area out of bound, try take bottom left of each circle
-            if(y_pol<256 and x_pol>0):
-                pol_sample = array[max((y_pol)-half_pol_win_size_pix,0):min((y_pol)+half_pol_win_size_pix+1, 256), max(x_pol-half_pol_win_size_pix,0):min(x_pol+half_pol_win_size_pix+1, 256)] 
+            if(y_pol<scan_pixels_len and x_pol>0):
+                pol_sample = array[max((y_pol)-half_pol_win_size_pix,0):min((y_pol)+half_pol_win_size_pix+1, scan_pixels_len), max(x_pol-half_pol_win_size_pix,0):min(x_pol+half_pol_win_size_pix+1, scan_pixels_len)] 
                 pol_total_ra +=mean(absolute(pol_sample - mean(pol_sample)))
                 pol_ra_list+= "{:.3f}".format(mean(absolute(pol_sample - mean(pol_sample))))+"/"
                 pol_area_count+=1
         if (pol_area_count==0):
-            pol_ra = "Errored: Please calculate polymer roughness manually."
+            for i in [x for x in range(len(detected_circles[0, :])) if x+1 not in exclude]:
+                #If pol_area)count still zero after taking bottom left, just take area very near circles. 
+                pt = detected_circles[0,i]
+                x,y, r = int(pt[0]*scan_pixels_len/768), int(pt[1]*scan_pixels_len/768), int(pt[2]*scan_pixels_len/768)
+                
+                half_pol_win_size_pix  = int(0.5*scan_pixels_len*polwinsize/20)
+                
+                x_pol = int(x+0.707*r+half_pol_win_size_pix)+3
+                y_pol = int(y+0.707*r+half_pol_win_size_pix)+3
+            
+                if(y_pol>0 and x_pol<scan_pixels_len):
+                    pol_sample = array[max((y_pol)-half_pol_win_size_pix,0):min((y_pol)+half_pol_win_size_pix+1, scan_pixels_len), max(x_pol-half_pol_win_size_pix,0):min(x_pol+half_pol_win_size_pix+1, scan_pixels_len)] 
+                    pol_total_ra +=mean(absolute(pol_sample - mean(pol_sample)))
+                    pol_area_count+=1
+                    pol_ra_list+=str("{:.3f}".format(mean(absolute(pol_sample - mean(pol_sample)))))+"/"
+            
+            #Polymer roughness 
+            if (pol_area_count==0):
+                pol_ra = "Errored: Please calculate polymer roughness manually."
+            else:
+                pol_ra = pol_total_ra/pol_area_count
+                take_near = True
         else:
             pol_ra = pol_total_ra/pol_area_count
             take_bottom_left = True
@@ -110,7 +132,7 @@ def find_ra(array, detected_circles, exclude, cwinsize, polwinsize):
         
     #print([copper_ra, pol_ra])
         
-    return copper_ra, pol_ra, take_bottom_left, cu_ra_list, pol_ra_list
+    return copper_ra, pol_ra, take_bottom_left, take_near, cu_ra_list, pol_ra_list
 
 def insert_ra(excel_file_path, ra, pol_ra, col_num, cu_ra_list, pol_ra_list):
     wb = openpyxl.load_workbook(excel_file_path)
