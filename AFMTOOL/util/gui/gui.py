@@ -21,12 +21,12 @@ def launch_gui():
         ],
         [sg.Text('Min radius (μm):'), sg.Input('1', key='-MINR-', size = 6), sg.Push(), 
          sg.Text('Max radius (μm):'), sg.Input('2.5', key='-MAXR-', size = 6), sg.Push(),
-         sg.Text('Pitch (μm):'), sg.Input(key='-PITCH-', size = 6), sg.Push(),
+         sg.Text('Pitch (μm):'), sg.Input('5', key='-PITCH-', size = 6), sg.Push(),
          ],
     ]
     
     options_roughness_layout = [
-        [sg.Text('Contacts window side length: (μm):'), sg.Input(key='-CWINSIZE-', size = 6), sg.Push(), sg.Text('Polymer window side length (μm):'), sg.Input(key='-POLWINSIZE-', size = 6), sg.Push()],
+        [sg.Text('Contacts window side length: (μm):'), sg.Input('1', key='-CWINSIZE-', size = 6), sg.Push(), sg.Text('Polymer window side length (μm):'), sg.Input('2', key='-POLWINSIZE-', size = 6), sg.Push()],
     ]
     
     options_line_layout = [
@@ -99,7 +99,7 @@ def launch_gui():
     filename_list = values['-FILES-'].split(';')
     
     #Convert to floats for output, default output None to match that of legacy codes using Tkinter
-    pitch = None if values['-PITCH-']=='' else float(values['-PITCH-'])
+    pitch = None if (values['-PITCH-']=='' or values['-PITCH-'] == '5') else float(values['-PITCH-'])
     minr = None if (values['-MINR-']=='' or values['-MINR-']=='1') else float(values['-MINR-'])
     num_circles = None if values['-NumCircles-']=='' else int(values['-NumCircles-'])
     maxr = None if (values['-MAXR-']=='' or values['-MAXR-']=='2.5') else float(values['-MAXR-'])
