@@ -9,6 +9,7 @@ def launch_gui():
 
     main_layout = [
             [sg.Text('Select your files', font='bold')],
+            [sg.Text('Click "Notes" below to see default radius and pitch values assumed.')],
             [sg.Text('Files selected:'), sg.Input(readonly = True, key = '-FILES-'), sg.FilesBrowse()],
             [sg.Submit(key='-SUBMIT-'), sg.Button('Notes')]
     ]
@@ -18,8 +19,8 @@ def launch_gui():
         sg.Push(),
         sg.Text('Index of circles to exclude: '),sg.Input(key='-EXCLUDE-', size = 10), sg.Push()
         ],
-        [sg.Text('Min radius (μm):'), sg.Input(key='-MINR-', size = 6), sg.Push(), 
-         sg.Text('Max radius (μm):'), sg.Input(key='-MAXR-', size = 6), sg.Push(),
+        [sg.Text('Min radius (μm):'), sg.Input('1', key='-MINR-', size = 6), sg.Push(), 
+         sg.Text('Max radius (μm):'), sg.Input('2.5', key='-MAXR-', size = 6), sg.Push(),
          sg.Text('Pitch (μm):'), sg.Input(key='-PITCH-', size = 6), sg.Push(),
          ],
     ]
@@ -82,8 +83,9 @@ def launch_gui():
                      keep_on_top=True, title= 'Help')
         elif event == 'Notes':
             sg.popup(
-                "Please note the program assumes a minimum and maximum radius of 1μm and 2.5μm respectively, and a minimum pitch of 5μm.",
-                "If your parameters are out of this range please enter them in the Optional Inputs tab."
+                "Please note the program assumes a minimum and maximum radius of 1μm and 2.5μm respectively for the Cu pads, and a minimum pitch of 5μm.",
+                "The areas used for roughness calculations for copper and polymer are 1μmx1μm and 2μmx2μm respectively.",
+                "If you need smaller/bigger areas, or if the size of your Cu pads are out of the default range you can set them in the Optional Inputs tab."
                 ,title='Notes',
             )
         elif event == '-VERTLINE-':  # if the graphical button that changes images
@@ -98,9 +100,9 @@ def launch_gui():
     
     #Convert to floats for output, default output None to match that of legacy codes using Tkinter
     pitch = None if values['-PITCH-']=='' else float(values['-PITCH-'])
-    minr = None if values['-MINR-']=='' else float(values['-MINR-'])
+    minr = None if (values['-MINR-']=='' or values['-MINR-']=='1') else float(values['-MINR-'])
     num_circles = None if values['-NumCircles-']=='' else int(values['-NumCircles-'])
-    maxr = None if values['-MAXR-']=='' else float(values['-MAXR-'])
+    maxr = None if (values['-MAXR-']=='' or values['-MAXR-']=='2.5') else float(values['-MAXR-'])
     exclude = None if values['-EXCLUDE-']=='' else values['-EXCLUDE-']
     cwinsize = 1 if values['-CWINSIZE-']=='' else float(values['-CWINSIZE-'])
     polwinsize = 2 if values['-POLWINSIZE-']=='' else float(values['-POLWINSIZE-'])
