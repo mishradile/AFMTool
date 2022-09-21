@@ -78,9 +78,8 @@ AFMTOOL/
 ├── /AFMTOOL/ 
 │   ├── /util/              # Folder containing scripts grouped by their general functions (Draw 2D/3D plots, find roughness, find step height, etc)
 │   ├── AFMtool.py          # Script that will be ran from command line, it'll call other scripts in the process of running when needed
-├── /results/               # Test files (alternatively `spec` or `tests`)
-    ├── /ref_regions_imgs/  # Place to store images indicating regions which are used for calculation of copper/polymer roughness and step height. 
-    ├── /ML_identified_contacts  # Raw output from OpenCV Houghcircles indicating the circles identified, used to quickly check if script is giving correct result for each file. (Maybe can remove after completely verifying accuracy of ref_regions_imgs)                            
-    └── /xlSheets           # Folder storing final Excel reports
-
+├── /results/               
+    ├── /ref_regions_imgs/  # Place to store images indicating regions which are used for calculation of copper/polymer roughness and step height.                         └── /xlSheets           # Folder storing final Excel reports
 ```
+### Overall flow of program 
+Open GUI (`util/gui`), read user's selected files and optional inputs --> Parse AFM raw data into Numpy arrays, using scripts in `/util/file_reader/` (adapted from pySPM as cited in paper) --> Flatten data array using pySPM function --> Generate 2D, 3D plots using `util/draw_2d_3d_images` --> Automatically identify location of circular/square Cu pads using Hough transform algorithm in OpenCV. (`util/mlScripts`)  --> Calclate roughness at identified regions (`util/roughness/`) --> Generate line profile around the best circle identified (`util/line_profile/`), automatically identifying the regions of polymer and Cu, to calculate step height and roll-off --> Using identified regions of Cu pads and polymers, plot reference images indicating the areas used for calculations, so that user can check for program's accuracy quickly (`util.ref_imgs`) --> Create new Excel file and fill in with all the calculated values (`util/excel_utils/`)
