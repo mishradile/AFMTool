@@ -77,7 +77,7 @@ Options:
 AFMTOOL/
 ├── /AFMTOOL/ 
 │   ├── /util/              # Folder containing scripts grouped by their general functions (Draw 2D/3D plots, find roughness, find step height, etc)
-│   ├── AFMtool.py          # Script that will be ran from command line, it'll call other scripts in the process of running when needed
+│   ├── main.py          # Script that will be ran, it'll call other scripts in the process of running when needed
 ├── /results/               
     ├── /ref_regions_imgs/  # Place to store images indicating regions which are used for calculation of copper/polymer roughness and step height.                         └── /xlSheets           # Folder storing final Excel reports
 ```
